@@ -1,0 +1,63 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# ignore ALL .log files
+*.log
+
+# ignore ALL files in ANY directory named temp
+temp/ 
+
+#ignore all cmake builds
+cmake_build_Debug/
+
+#ignore caches
+.cache/
+
+#ignore compile commands
+compile_commands.json
+
+.DS_Store
+
+
+cmake_build_Release/
+
+build_release/
+
+TODO.txt
+
+Physics
+
+.DS_Store
+
+gitpush.cpp
+push
