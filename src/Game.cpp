@@ -1,4 +1,5 @@
 #include "../include/Game.h"
+#include "SFML/Window/WindowStyle.hpp"
 #include <vector>
 
 const bool Game::isRunning() const
@@ -14,13 +15,16 @@ Game::~Game()
 
 Game::Game()
     : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2), 
-    WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.2)
+    WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
+      , m_sim{}
 {
     initVariables();
     initWindow();
     initFont();
     initText();
 
+    m_sim.setWindow(*m_window);
+    m_sim.setSubSteps(8);
 
 }
 
@@ -43,7 +47,7 @@ void Game::initWindow()
     
     m_contextSettings.antialiasingLevel = 3;
 
-    m_window = new sf::RenderWindow(m_videoMode, "SORTING!", sf::Style::Close | sf::Style::None, m_contextSettings);
+    m_window = new sf::RenderWindow(m_videoMode, "PHYSICS!", sf::Style::Close | sf::Style::None, m_contextSettings);
 }
 
 void Game::initFont()
@@ -94,6 +98,8 @@ void Game::update()
     pollEvents();
     getInput();
     updateMousePos();
+
+    m_sim.update(Time::deltaTime);
 }
 
 
@@ -101,6 +107,8 @@ void Game::render()
 {
     m_window->clear();
 
+    m_sim.render(*m_window);
+    m_sim.renderUI(*m_window);
 
     m_window->display();
 }

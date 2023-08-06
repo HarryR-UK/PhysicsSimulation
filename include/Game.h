@@ -1,4 +1,5 @@
 #include "SFML/Window/ContextSettings.hpp"
+#include "Simulation.h"
 #ifndef GAME_H
 #pragma once
 
@@ -39,7 +40,7 @@ class Game
         sf::Vector2i m_mousePosScreen;
         sf::Vector2i m_mousePosWindow;
 
-
+        Simulation m_sim;
 
         
 
