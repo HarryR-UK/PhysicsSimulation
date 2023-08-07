@@ -12,7 +12,6 @@
 #include "SFML/System/Vector2.hpp"
 #include "Time.h"
 #include "Object.h"
-#include "Grid.h"
 #pragma once
 
 class Simulation
@@ -35,7 +34,6 @@ class Simulation
 
         sf::Clock m_clock;
 
-        Grid m_grid;
 
 
     private:
