@@ -48,6 +48,7 @@ void Game::initWindow()
     m_contextSettings.antialiasingLevel = 3;
 
     m_window = new sf::RenderWindow(m_videoMode, "PHYSICS!", sf::Style::Close | sf::Style::None, m_contextSettings);
+    m_window->setFramerateLimit(244);
 }
 
 void Game::initFont()
@@ -99,7 +100,6 @@ void Game::update()
     getInput();
     updateMousePos();
 
-    m_sim.setDeltaTime(Time::getFps());
     m_sim.update();
 }
 

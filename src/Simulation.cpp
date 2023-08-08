@@ -62,30 +62,66 @@ void Simulation::initText()
 }
 
 
-void Simulation::setDeltaTime(float fps)
+void Simulation::setDeltaTime()
 {
-     m_deltaTime = (1 / fps) * Time::MULTIPLIER;
+     m_deltaTime = m_deltaTimeClock.restart().asSeconds() * MULT;
 }
 // UPDATING
 void Simulation::updateText()
 {
     std::stringstream ss;
     ss << "FPS: " << static_cast<unsigned>(Time::getFps())<<'\n'
-        << m_simUpdateClock.restart().asMilliseconds() << "ms" << '\n'
+        << "SIM TIME: " << m_simUpdateClock.restart().asMilliseconds() << "ms" << '\n'
+        << "BALLS: " << m_objects.size() << '\n'
         ;
     m_debugText.setString(ss.str());
 }
 
 void Simulation::getInput()
 {
-    
+    if(InputHandler::isLeftMouseClicked())
+    {
+        if(mouseHoveringBall())
+            m_grabbingBall = true;
+
+    }
+    else {
+        m_grabbingBall = false;
+        for(auto &obj : m_objects)
+        {
+            if(obj.isGrabbed)
+            {
+                obj.isGrabbed = false;
+                obj.outlineThic = 0;
+                obj.addVelocity(m_mouseVelocity, getSubDeltaTime());
+
+            }
+
+        }
+    }
+}
+
+void Simulation::updateMousePos()
+{
+    m_mousePosView = m_window->mapPixelToCoords(sf::Mouse::getPosition(*m_window));
+}
+
+void Simulation::calcMouseVelocity()
+{
+    // useful so that when grabbing a ball, then letting go, depending on how you throw the mouse, depends on how the ball is thrown
+    m_mouseVelocity = m_mousePosView - m_mouseOldPos;
+    m_mouseOldPos = m_mousePosView;
 }
 
 void Simulation::update( )
 {
+    setDeltaTime();
     m_time+= m_deltaTime;
+    std::cout << m_deltaTime << '\n';
     updateText();
     getInput();
+    updateMousePos();
+    calcMouseVelocity();
     float subStepDT = getSubDeltaTime();
     for(int i{getSubSteps()}; i > 0; --i)
     {
@@ -94,22 +130,54 @@ void Simulation::update( )
         checkCollisions();
         updateObjects( subStepDT );
         applyGravityToObjects();
+        ballGrabbedMovement();
+    }
+}
+
+bool Simulation::mouseHoveringBall()
+{
+    for(auto &obj: m_objects)
+    {
+        sf::Vector2f axis = m_mousePosView - obj.currentPos;
+        float dist = sqrt(axis.x * axis.x + axis.y * axis.y);
+        
+        if(dist < obj.radius && !m_grabbingBall)
+        {
+            obj.isGrabbed = true;
+            obj.outlineThic = 1;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Simulation::ballGrabbedMovement()
+{
+    for(auto &obj : m_objects)
+    {
+        if(obj.isGrabbed)
+        {
+            obj.outlineThic = 1;
+            obj.currentPos = m_mousePosView;
+        }
     }
 }
 
 void Simulation::demoSpawner()
 {
-    sf::Vector2f spawnPos = {m_window->getSize().x * 0.5f, m_window->getSize().y * 0.5f};
-    int maxBalls = 1000;
+    sf::Vector2f spawnPos = {m_window->getSize().x * 0.5f, m_window->getSize().y * 0.25f};
+    int maxBalls = 300;
     float spawnDelay = 0.1f;
     float spawnSpeed = 50;
-    float ballRad = 8;
+    int minBallRad = 2;
+    int maxBallRad = 10;
 
-    if(m_objects.size() < 1000 && m_clock.getElapsedTime().asSeconds() >= spawnDelay)
+    if(m_objects.size() < maxBalls && m_clock.getElapsedTime().asSeconds() >= spawnDelay)
     {
         m_clock.restart().asSeconds();
-        Object& ob = addNewObject(spawnPos, ballRad);
-        ob.oldPos.x -= 0.05f;
+        Object& ob = addNewObject(spawnPos, (rand() % maxBallRad) + minBallRad);
+        ob.addVelocity(sf::Vector2f(1,1), getSubDeltaTime());
         ob.color = sf::Color::Cyan;
 
     }
@@ -126,12 +194,12 @@ void Simulation::checkConstraints()
         if(obj.currentPos.x > winWidth - obj.radius)
         {
             obj.currentPos.x = winWidth - obj.radius;
-            //obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
+            obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
         }
         if(obj.currentPos.x < obj.radius)
         {
             obj.currentPos.x = obj.radius;
-            // obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
+            obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
         }
         if(obj.currentPos.y < obj.radius)
         {
@@ -200,6 +268,8 @@ void Simulation::render( sf::RenderTarget &target )
         circleS.setOrigin(obj.radius, obj.radius);
         circleS.setFillColor(obj.color);
         circleS.setPosition(obj.currentPos);
+        circleS.setOutlineColor(obj.outlineColor);
+        circleS.setOutlineThickness(obj.outlineThic);
         target.draw(circleS);
     }
 }

@@ -12,6 +12,7 @@
 #include "SFML/System/Vector2.hpp"
 #include "Time.h"
 #include "Object.h"
+#include "InputHandler.h"
 #pragma once
 
 class Simulation
@@ -36,7 +37,17 @@ class Simulation
         sf::Clock m_simUpdateClock;
 
 
-        
+        bool m_isMouseHeld = false;
+        bool m_grabbingBall = true;
+
+        sf::Vector2f m_mousePosView;
+        sf::Vector2f m_mouseOldPos;
+
+        sf::Vector2f m_mouseVelocity;
+
+        sf::Clock m_deltaTimeClock;
+        float MULT  = 60;
+
 
 
 
@@ -45,12 +56,20 @@ class Simulation
 
         void updateObjects( float subDeltaTime );
         void updateText( );
+        void updateMousePos( );
+
         void applyGravityToObjects( );
         void checkConstraints( );
         void checkCollisions( );
         void getInput( );
 
         void demoSpawner( );
+
+        void ballGrabbedMovement( );
+        bool mouseHoveringBall( );
+
+        void calcMouseVelocity( );
+        void setDeltaTime( );
 
     public:
 
@@ -71,7 +90,6 @@ class Simulation
         const float getSubDeltaTime( ) const;
         const int getSubSteps( ) const;
         const float getTime( ) const;
-        void setDeltaTime( float fps );
 
 
 };

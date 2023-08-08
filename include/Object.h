@@ -13,9 +13,11 @@ struct Object
 
     sf::Color color = sf::Color::White;
     float radius = 8.f;
-    float friction = 0.0f;
+    float friction = 0.95f;
     float mass = radius / 5.f;
     int ID;
+    int outlineThic = 0;
+    sf::Color outlineColor = sf::Color::White;
 
     bool isPinned = false;
     bool isGrabbed = false;
