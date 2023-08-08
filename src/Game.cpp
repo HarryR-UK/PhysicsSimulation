@@ -99,7 +99,8 @@ void Game::update()
     getInput();
     updateMousePos();
 
-    m_sim.update(Time::deltaTime);
+    m_sim.setDeltaTime(Time::getFps());
+    m_sim.update();
 }
 
 

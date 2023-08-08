@@ -33,6 +33,10 @@ class Simulation
         const sf::Vector2f GRAVITY = { 0.f, 20.f };
 
         sf::Clock m_clock;
+        sf::Clock m_simUpdateClock;
+
+
+        
 
 
 
@@ -44,6 +48,7 @@ class Simulation
         void applyGravityToObjects( );
         void checkConstraints( );
         void checkCollisions( );
+        void getInput( );
 
         void demoSpawner( );
 
@@ -56,7 +61,7 @@ class Simulation
         void render( sf::RenderTarget& target );
         void renderUI( sf::RenderTarget& target );
 
-        void update( float& deltaTime );
+        void update( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
 
@@ -66,6 +71,7 @@ class Simulation
         const float getSubDeltaTime( ) const;
         const int getSubSteps( ) const;
         const float getTime( ) const;
+        void setDeltaTime( float fps );
 
 
 };

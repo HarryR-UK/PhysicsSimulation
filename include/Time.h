@@ -11,13 +11,13 @@ class Time{
         static void initDeltaTime();
         static void updateFPS();
         static float& getFps();
+        static constexpr float MULTIPLIER = TIME_DELTATIME_MULT;;
         
     private:
         inline static sf::Clock clock;
         inline static sf::Clock fpsClock;
         inline static sf::Time fpsTime;
         inline static float fps;
-        static constexpr float MULTIPLIER = TIME_DELTATIME_MULT;;
 
 };
 

@@ -62,19 +62,30 @@ void Simulation::initText()
 }
 
 
+void Simulation::setDeltaTime(float fps)
+{
+     m_deltaTime = (1 / fps) * Time::MULTIPLIER;
+}
 // UPDATING
 void Simulation::updateText()
 {
     std::stringstream ss;
-    ss << "FPS: " << static_cast<unsigned>(Time::getFps())<<'\n';
+    ss << "FPS: " << static_cast<unsigned>(Time::getFps())<<'\n'
+        << m_simUpdateClock.restart().asMilliseconds() << "ms" << '\n'
+        ;
     m_debugText.setString(ss.str());
 }
 
-void Simulation::update( float &deltaTime )
+void Simulation::getInput()
 {
-    m_deltaTime = deltaTime;
-    m_time+= deltaTime;
+    
+}
+
+void Simulation::update( )
+{
+    m_time+= m_deltaTime;
     updateText();
+    getInput();
     float subStepDT = getSubDeltaTime();
     for(int i{getSubSteps()}; i > 0; --i)
     {
@@ -92,17 +103,14 @@ void Simulation::demoSpawner()
     int maxBalls = 1000;
     float spawnDelay = 0.1f;
     float spawnSpeed = 50;
-    float ballRad = 1;
+    float ballRad = 8;
 
     if(m_objects.size() < 1000 && m_clock.getElapsedTime().asSeconds() >= spawnDelay)
     {
-        for(int i {20}; --i;)
-        {
-            Object& ob = addNewObject({2.f, 10.f + 1.1f * i}, ballRad);
-            ob.oldPos.x -= 1.3f;
-            ob.color = sf::Color::Cyan;
-            // m_clock.restart().asSeconds();
-        }
+        m_clock.restart().asSeconds();
+        Object& ob = addNewObject(spawnPos, ballRad);
+        ob.oldPos.x -= 0.05f;
+        ob.color = sf::Color::Cyan;
 
     }
 
