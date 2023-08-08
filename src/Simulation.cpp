@@ -117,7 +117,6 @@ void Simulation::update( )
 {
     setDeltaTime();
     m_time+= m_deltaTime;
-    std::cout << m_deltaTime << '\n';
     updateText();
     getInput();
     updateMousePos();
