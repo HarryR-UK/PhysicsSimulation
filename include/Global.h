@@ -2,6 +2,6 @@
 #ifndef GLOBAL_H
 
 #define TIME_DELTATIME_MULT 60.f
-#define HEIGHT_AWAY_TOP_SCREEN 100
+#define BALL_RADIUS 5;
 
 #endif // !GLOBAL_H

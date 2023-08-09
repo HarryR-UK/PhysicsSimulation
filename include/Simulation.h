@@ -1,5 +1,6 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
+#include "Global.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
@@ -32,7 +33,7 @@ class Simulation
         std::vector<Object> m_objects = {};
         std::vector<Object*> m_ptrObjects = {};
 
-        int m_ballRad = 5;
+        int m_ballRad = BALL_RADIUS;
 
         const sf::Vector2f GRAVITY = { 0.f, 20.f };
 
