@@ -4,6 +4,8 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
+#include <mutex>
+#include <thread>
 #include <vector>
 #include <list>
 #include <iostream>
@@ -54,7 +56,9 @@ class Simulation
         sf::Clock m_deltaTimeClock;
         float MULT  = 60;
 
-        Grid m_grid;
+        std::mutex m_objectsMutex;
+        std::thread m_updateThread;
+
 
 
 
@@ -80,6 +84,7 @@ class Simulation
         void setDeltaTime( );
 
         sf::Color getRainbowColors( float time );
+        void simulate( );
 
     public:
 
@@ -93,6 +98,7 @@ class Simulation
         void update( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
+        void joinUpdateThread();
 
         const void setWindow( sf::RenderWindow& window );
         const void setSubSteps( int substeps );

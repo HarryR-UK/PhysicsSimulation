@@ -2,16 +2,17 @@
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
+#include "SFML/Graphics/RenderTarget.hpp"
 #include "SFML/System/Vector2.hpp"
 #include <cstddef>
 #include <iostream>
 #include <iterator>
 #include <sstream>
+#include <thread>
 #include <vector>
 
 Simulation::~Simulation()
 {
-    m_grid.deleteGridMap();
 }
 
 Simulation::Simulation()
@@ -24,7 +25,6 @@ Simulation::Simulation()
 const void Simulation::setWindow( sf::RenderWindow& window )
 {
     m_window = &window;
-    m_grid.initGrid(m_ballRad * 2, *m_window);
 }
 const void Simulation::setSubSteps( int substeps )
 {
@@ -147,9 +147,19 @@ void Simulation::update( )
         applyGravityToObjects();
         ballGrabbedMovement();
     }
-    m_grid.clearGrid();
+}
 
+void Simulation::simulate( )
+{
 
+        //render(*m_window);
+        //renderUI(*m_window);
+
+}
+
+void Simulation::joinUpdateThread()
+{
+    m_updateThread.join();
 }
 
 bool Simulation::mouseHoveringBall()
@@ -199,7 +209,7 @@ sf::Color Simulation::getRainbowColors( float time )
 void Simulation::demoSpawner()
 {
     sf::Vector2f spawnPos = {m_window->getSize().x * 0.5f, m_window->getSize().y * 0.25f};
-    int maxBalls = 100;
+    int maxBalls = 1000;
     float spawnDelay = 0.1f;
     float spawnSpeed = 50;
 
@@ -224,12 +234,12 @@ void Simulation::checkConstraints()
         if(obj.currentPos.x > winWidth - obj.radius)
         {
             obj.currentPos.x = winWidth - obj.radius;
-            obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
+            //obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
         }
         if(obj.currentPos.x < obj.radius)
         {
             obj.currentPos.x = obj.radius;
-            obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
+            // obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
         }
         if(obj.currentPos.y < obj.radius)
         {
@@ -246,53 +256,7 @@ void Simulation::checkConstraints()
 
 void Simulation::checkCollisions()
 {
-    for(int x{1}; x < m_grid.getWidth()- 1; ++x)
-    {
-        for(int y{1}; y < m_grid.getHeight() -1; ++y)
-        {
-            std::vector<int>& indxs1 = m_grid.getIndexesAtPos(x,y);
-            for(int dx{-1}; dx <= 1; ++dx)
-            {
-                for(int dy{-1}; dy <= 1; ++dy)
-                {
-                    std::vector<int>& indxs2 = m_grid.getIndexesAtPos(x + dx, y + dy);
 
-                    // cheking the cols
-
-                    for(int i = 0; i < indxs1.size(); ++i)
-                    {
-                       for(int j = 0; j < indxs2.size(); ++ j)
-                       {
-                            if(i != j)
-                            {
-                                Object& obj1 = m_objects[i];
-                                Object& obj2 = m_objects[j];
-
-                                sf::Vector2f axis = obj1.currentPos - obj2.currentPos;
-                                float distance = sqrt(axis.x * axis.x + axis.y * axis.y);
-                                float minAllowedDist = obj1.radius + obj2.radius;
-                                if(distance < minAllowedDist)
-                                {
-                                    float moveAmount = minAllowedDist - distance;
-                                    float perc = (moveAmount / distance) * 0.5f;
-                                    sf::Vector2f off = axis * perc;
-
-                                    if(!obj1.isPinned)
-                                        obj1.currentPos+= off;
-                                    if(!obj2.isPinned)
-                                        obj2.currentPos -= off;
-                                }
-
-                            }
-                       }
-                    }
-
-                }
-            }
-        }
-    }
-
-    /*
     for(std::size_t i = 0; i < m_objects.size(); ++i)
     {
         Object& obj1 = m_objects[i];
@@ -315,7 +279,6 @@ void Simulation::checkCollisions()
             }
         }
     }
-    */
 }
 
 void Simulation::updateObjects( float subDeltaTime )
@@ -323,11 +286,6 @@ void Simulation::updateObjects( float subDeltaTime )
     for( auto &obj : m_objects)
     {
         obj.update(subDeltaTime);
-        int posx = obj.currentPos.x / m_grid.getGridSize();
-        int posy = obj.currentPos.y / m_grid.getGridSize();
-
-
-        m_grid.setIndexAtPos(posx, posy, obj.ID);
     }
 }
 

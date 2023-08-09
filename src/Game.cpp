@@ -1,5 +1,6 @@
 #include "../include/Game.h"
 #include "SFML/Window/WindowStyle.hpp"
+#include <thread>
 #include <vector>
 
 const bool Game::isRunning() const
@@ -103,8 +104,8 @@ void Game::update()
     pollEvents();
     getInput();
     updateMousePos();
-
     m_sim.update();
+
 }
 
 
