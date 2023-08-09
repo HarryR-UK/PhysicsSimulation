@@ -12,6 +12,7 @@
 #include "SFML/System/Vector2.hpp"
 #include "Time.h"
 #include "Object.h"
+#include "Grid.h"
 #include "InputHandler.h"
 #pragma once
 
@@ -28,8 +29,10 @@ class Simulation
         sf::Text m_debugText;
         sf::Font m_font;
 
-        std::vector<Object> m_objects;
-        std::vector<Object*> m_ptrObjects;
+        std::vector<Object> m_objects = {};
+        std::vector<Object*> m_ptrObjects = {};
+
+        int m_ballRad = 5;
 
         const sf::Vector2f GRAVITY = { 0.f, 20.f };
 
@@ -38,6 +41,8 @@ class Simulation
 
 
         bool m_isMouseHeld = false;
+        bool m_isKeyHeld = false;
+        
         bool m_grabbingBall = true;
 
         sf::Vector2f m_mousePosView;
@@ -47,6 +52,8 @@ class Simulation
 
         sf::Clock m_deltaTimeClock;
         float MULT  = 60;
+
+        Grid m_grid;
 
 
 
@@ -70,6 +77,8 @@ class Simulation
 
         void calcMouseVelocity( );
         void setDeltaTime( );
+
+        sf::Color getRainbowColors( float time );
 
     public:
 

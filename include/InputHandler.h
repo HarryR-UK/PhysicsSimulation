@@ -8,6 +8,7 @@ class InputHandler
     public:
         static bool isLeftMouseClicked();
         static bool isRightMouseClicked();
+        static bool isCClicked();
 };
 
 

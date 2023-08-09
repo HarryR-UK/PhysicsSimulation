@@ -23,6 +23,7 @@ Simulation::Simulation()
 const void Simulation::setWindow( sf::RenderWindow& window )
 {
     m_window = &window;
+    m_grid.initGrid(m_ballRad * 2, *m_window);
 }
 const void Simulation::setSubSteps( int substeps )
 {
@@ -99,6 +100,20 @@ void Simulation::getInput()
 
         }
     }
+
+
+    if(InputHandler::isCClicked())
+    {
+        if(!m_isKeyHeld)
+        {
+            m_isKeyHeld = true;
+            m_objects.clear();
+        }
+
+    }
+    else{
+        m_isKeyHeld = false;
+    }
 }
 
 void Simulation::updateMousePos()
@@ -130,7 +145,10 @@ void Simulation::update( )
         updateObjects( subStepDT );
         applyGravityToObjects();
         ballGrabbedMovement();
+        m_grid.clearGrid();
     }
+
+
 }
 
 bool Simulation::mouseHoveringBall()
@@ -163,21 +181,33 @@ void Simulation::ballGrabbedMovement()
     }
 }
 
+sf::Color Simulation::getRainbowColors( float time )
+{
+    float red = sin(time);
+    float green = sin(time + 0.3f * 2);
+    float blue = sin(time + 0.6f * 2.0);
+
+
+    return sf::Color(
+        static_cast<unsigned>(red * red * 255),
+        static_cast<unsigned>(green * green * 255),
+        static_cast<unsigned>(blue * blue * 255)
+            );
+}
+
 void Simulation::demoSpawner()
 {
     sf::Vector2f spawnPos = {m_window->getSize().x * 0.5f, m_window->getSize().y * 0.25f};
     int maxBalls = 300;
     float spawnDelay = 0.1f;
     float spawnSpeed = 50;
-    int minBallRad = 2;
-    int maxBallRad = 10;
 
     if(m_objects.size() < maxBalls && m_clock.getElapsedTime().asSeconds() >= spawnDelay)
     {
         m_clock.restart().asSeconds();
-        Object& ob = addNewObject(spawnPos, (rand() % maxBallRad) + minBallRad);
-        ob.addVelocity(sf::Vector2f(1,1), getSubDeltaTime());
-        ob.color = sf::Color::Cyan;
+        Object& ob = addNewObject(spawnPos, m_ballRad);
+        ob.addVelocity(sf::Vector2f(10,1), getSubDeltaTime());
+        ob.color = getRainbowColors(m_time);
 
     }
 
@@ -244,6 +274,12 @@ void Simulation::updateObjects( float subDeltaTime )
     for( auto &obj : m_objects)
     {
         obj.update(subDeltaTime);
+        int posx = obj.currentPos.x / m_grid.getGridSize();
+        int posy = obj.currentPos.y / m_grid.getGridSize();
+
+        // std::cout << posx << ", " << posy << '\n';
+
+        m_grid.setIndexAtPos(posx, posy, obj.ID);
     }
 }
 
@@ -259,6 +295,23 @@ void Simulation::applyGravityToObjects( )
 // RENDERING
 void Simulation::render( sf::RenderTarget &target )
 {
+    sf::RectangleShape shape;
+    for(int x = 0; x < m_grid.getWidth(); ++x)
+    {
+        for(int y = 0; y < m_grid.getHeight(); ++y)
+        {
+            shape.setFillColor(sf::Color::Black);
+            shape.setPosition(sf::Vector2f(x * m_grid.getGridSize(), y * m_grid.getGridSize()));
+            shape.setSize(sf::Vector2f(m_grid.getGridSize(), m_grid.getGridSize()));
+            shape.setOutlineThickness(1);
+            shape.setOutlineColor(sf::Color::White);
+
+            if(m_grid.getIndexesAtPos(x, y).size() > 0)
+                shape.setFillColor(sf::Color::White);
+            target.draw(shape);
+        }
+    }
+
     sf::CircleShape circleS;
     circleS.setPointCount(50);
     for(auto &obj : m_objects)
@@ -269,6 +322,7 @@ void Simulation::render( sf::RenderTarget &target )
         circleS.setPosition(obj.currentPos);
         circleS.setOutlineColor(obj.outlineColor);
         circleS.setOutlineThickness(obj.outlineThic);
+
         target.draw(circleS);
     }
 }
