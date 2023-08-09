@@ -56,7 +56,6 @@ class Simulation
         sf::Clock m_deltaTimeClock;
         float MULT  = 60;
 
-        std::mutex m_objectsMutex;
         std::thread m_updateThread;
 
 
@@ -95,7 +94,9 @@ class Simulation
         void render( sf::RenderTarget& target );
         void renderUI( sf::RenderTarget& target );
 
-        void update( );
+
+        void startSim( );
+        void updateUI( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
         void joinUpdateThread();

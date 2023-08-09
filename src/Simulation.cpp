@@ -72,7 +72,7 @@ void Simulation::setDeltaTime()
 void Simulation::updateText()
 {
     std::stringstream ss;
-    ss << "FPS: " << static_cast<unsigned>(Time::getFps())<<'\n'
+    ss 
         << "SIM TIME: " << m_simUpdateClock.restart().asMilliseconds() << "ms" << '\n'
         << "BALLS: " << m_objects.size() << '\n'
         ;
@@ -129,32 +129,41 @@ void Simulation::calcMouseVelocity()
     m_mouseOldPos = m_mousePosView;
 }
 
-void Simulation::update( )
+void Simulation::startSim( )
 {
-    setDeltaTime();
-    m_time+= m_deltaTime;
-    updateText();
-    getInput();
-    updateMousePos();
-    calcMouseVelocity();
-    float subStepDT = getSubDeltaTime();
-    for(int i{getSubSteps()}; i > 0; --i)
-    {
-        demoSpawner();
-        checkConstraints();
-        checkCollisions();
-        updateObjects( subStepDT );
-        applyGravityToObjects();
-        ballGrabbedMovement();
-    }
+    m_updateThread = std::thread(&Simulation::simulate, this);
 }
 
 void Simulation::simulate( )
 {
+    while(m_window->isOpen())
+    {
+        m_time+= m_deltaTime;
+        updateText();
+        setDeltaTime();
+        float subStepDT = getSubDeltaTime();
+        for(int i{getSubSteps()}; i > 0; --i)
+        {
+            demoSpawner();
+            checkConstraints();
+            checkCollisions();
+            updateObjects( subStepDT );
+            ballGrabbedMovement();
+            applyGravityToObjects();
+        }
 
-        //render(*m_window);
-        //renderUI(*m_window);
+    }
 
+
+
+}
+
+void Simulation::updateUI()
+{
+    getInput();
+    updateMousePos();
+    calcMouseVelocity();
+    
 }
 
 void Simulation::joinUpdateThread()
@@ -210,14 +219,14 @@ void Simulation::demoSpawner()
 {
     sf::Vector2f spawnPos = {m_window->getSize().x * 0.5f, m_window->getSize().y * 0.25f};
     int maxBalls = 1000;
-    float spawnDelay = 0.1f;
+    float spawnDelay = 0.01f;
     float spawnSpeed = 50;
 
     if(m_objects.size() < maxBalls && m_clock.getElapsedTime().asSeconds() >= spawnDelay)
     {
         m_clock.restart().asSeconds();
         Object& ob = addNewObject(spawnPos, m_ballRad);
-        ob.addVelocity(sf::Vector2f(10,1), getSubDeltaTime());
+        ob.addVelocity(sf::Vector2f(5,10), getSubDeltaTime());
         ob.color = getRainbowColors(m_time);
 
     }
@@ -301,22 +310,6 @@ void Simulation::applyGravityToObjects( )
 // RENDERING
 void Simulation::render( sf::RenderTarget &target )
 {
-    /*
-    sf::RectangleShape shape;
-    for(int x = 0; x < m_grid.getWidth(); ++x)
-    {
-        for(int y = 0; y < m_grid.getHeight(); ++y)
-        {
-            shape.setFillColor(sf::Color::Black);
-            shape.setPosition(sf::Vector2f(x * m_grid.getGridSize(), y * m_grid.getGridSize()));
-            shape.setSize(sf::Vector2f(m_grid.getGridSize(), m_grid.getGridSize()));
-            shape.setOutlineThickness(1);
-            shape.setOutlineColor(sf::Color::White);
-
-            target.draw(shape);
-        }
-    }
-    */
 
     sf::CircleShape circleS;
     circleS.setPointCount(50);

@@ -104,7 +104,7 @@ void Game::update()
     pollEvents();
     getInput();
     updateMousePos();
-    m_sim.update();
+    m_sim.updateUI();
 
 }
 
@@ -121,6 +121,7 @@ void Game::render()
 
 void Game::startGLoop()
 {
+    m_sim.startSim();
     while(this->isRunning())
     {
         Time::initDeltaTime();
@@ -131,4 +132,5 @@ void Game::startGLoop()
         this->render();
 
     }
+    m_sim.joinUpdateThread();
 }
