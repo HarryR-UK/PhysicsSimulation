@@ -1,6 +1,7 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 #include "Global.h"
+#include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
@@ -43,22 +44,28 @@ class Simulation
         sf::Clock m_simUpdateClock;
 
 
-        bool m_isMouseHeld = false;
-        bool m_isKeyHeld = false;
         
         bool m_grabbingBall = true;
 
-        sf::Vector2f m_mousePosView;
-        sf::Vector2f m_mouseOldPos;
-
-        sf::Vector2f m_mouseVelocity;
 
         sf::Clock m_deltaTimeClock;
         float MULT  = 60;
 
         std::thread m_updateThread;
 
+        // MOUSE
+        sf::Vector2f m_mousePosView;
+        sf::Vector2f m_mouseOldPos;
+        bool m_isMouseHeld = false;
+        sf::Vector2f m_mouseVelocity;
+        float m_mouseColRad = 15;
+        bool m_mouseColActive = false;
+        sf::CircleShape m_mouseColShape;
 
+
+        bool m_isKeyHeld = false;
+        bool m_gravityActive = true;
+        bool m_paused = false;
 
 
 
@@ -72,6 +79,7 @@ class Simulation
         void applyGravityToObjects( );
         void checkConstraints( );
         void checkCollisions( );
+        void mouseCollisionsBall( );
         void getInput( );
 
         void demoSpawner( );

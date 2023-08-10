@@ -4,6 +4,7 @@
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "SFML/Graphics/RenderTarget.hpp"
 #include "SFML/System/Vector2.hpp"
+#include <__utility/integer_sequence.h>
 #include <cstddef>
 #include <iostream>
 #include <iterator>
@@ -11,14 +12,22 @@
 #include <thread>
 #include <vector>
 
+
 Simulation::~Simulation()
 {
 }
 
 Simulation::Simulation()
 {
+
+
     m_objects.reserve(10000);
     initText();
+    m_mouseColShape.setRadius(m_mouseColRad);
+    m_mouseColShape.setPointCount(50);
+    m_mouseColShape.setFillColor(sf::Color::Transparent);
+    m_mouseColShape.setOutlineThickness(1);
+    m_mouseColShape.setOutlineColor(sf::Color::White);
     
 }
 
@@ -75,6 +84,7 @@ void Simulation::updateText()
     ss 
         << "SIM TIME: " << m_simUpdateClock.restart().asMilliseconds() << "ms" << '\n'
         << "BALLS: " << m_objects.size() << '\n'
+        << "GRAVITY: " << m_gravityActive << '\n';
         ;
     m_debugText.setString(ss.str());
 }
@@ -88,19 +98,32 @@ void Simulation::getInput()
 
     }
     else {
-        m_grabbingBall = false;
-        for(auto &obj : m_objects)
+        if(m_grabbingBall)
         {
-            if(obj.isGrabbed)
+            for(auto &obj : m_objects)
             {
-                obj.isGrabbed = false;
-                obj.outlineThic = 0;
-                obj.addVelocity(m_mouseVelocity, getSubDeltaTime());
+                if(obj.isGrabbed)
+                {
+                    obj.isGrabbed = false;
+                    obj.outlineThic = 0;
+                    // this prevents the velocity shooting the ball when paused and grabbing a ball
+                    if(!m_paused)
+                        obj.addVelocity(m_mouseVelocity, getSubDeltaTime());
+                    else
+                        obj.setVelocity(sf::Vector2f(0,0), getSubDeltaTime());
+
+                }
 
             }
 
         }
+        m_grabbingBall = false;
     }
+
+    if(InputHandler::isRightMouseClicked())
+        m_mouseColActive = true;
+    else
+        m_mouseColActive = false;
 
 
     if(InputHandler::isCClicked())
@@ -112,9 +135,47 @@ void Simulation::getInput()
         }
 
     }
+    else if(InputHandler::isSpaceClicked())
+    {
+        if(!m_isKeyHeld)
+        {
+            m_isKeyHeld = true;
+            /*
+            for(auto& obj : m_objects)
+                obj.setVelocity({0,0}, getSubDeltaTime());
+            */
+            m_paused = !m_paused;
+        }
+    }
+    else if(InputHandler::isGClicked())
+    {
+        if(!m_isKeyHeld)
+        {
+            m_isKeyHeld = true;
+            m_gravityActive = !m_gravityActive;
+        }
+    }
     else{
         m_isKeyHeld = false;
     }
+
+    if(InputHandler::isMiddleMouseClicked())
+    {
+        if(!m_isMouseHeld && m_grabbingBall)
+        {
+            m_isMouseHeld = true;
+            for(auto &obj : m_objects)
+            {
+                if(obj.isGrabbed)
+                    obj.togglePinned();
+
+            }
+        }
+    }
+    else{
+        m_isMouseHeld = false;
+    }
+
 }
 
 void Simulation::updateMousePos()
@@ -138,19 +199,25 @@ void Simulation::simulate( )
 {
     while(m_window->isOpen())
     {
-        m_time+= m_deltaTime;
-        updateText();
-        setDeltaTime();
-        float subStepDT = getSubDeltaTime();
-        for(int i{getSubSteps()}; i > 0; --i)
-        {
-            demoSpawner();
-            checkConstraints();
-            checkCollisions();
-            updateObjects( subStepDT );
-            ballGrabbedMovement();
-            applyGravityToObjects();
-        }
+            m_time+= m_deltaTime;
+            updateText();
+            setDeltaTime();
+            float subStepDT = getSubDeltaTime();
+            for(int i{getSubSteps()}; i > 0; --i)
+            {
+                if(m_window->hasFocus() && !m_paused)
+                {
+                    if(m_gravityActive)
+                        applyGravityToObjects();
+                    demoSpawner();
+                    updateObjects( subStepDT );
+
+                }
+                checkConstraints();
+                checkCollisions();
+                ballGrabbedMovement();
+            }
+
 
     }
 
@@ -160,7 +227,10 @@ void Simulation::simulate( )
 
 void Simulation::updateUI()
 {
-    getInput();
+    if(m_window->hasFocus())
+    {
+        getInput();
+    }
     updateMousePos();
     calcMouseVelocity();
     
@@ -195,6 +265,10 @@ void Simulation::ballGrabbedMovement()
     {
         if(obj.isGrabbed)
         {
+            if(obj.isPinned)
+                obj.outlineColor = sf::Color::Green;
+            else
+                obj.outlineColor = sf::Color::White;
             obj.outlineThic = 1;
             obj.currentPos = m_mousePosView;
         }
@@ -218,16 +292,23 @@ sf::Color Simulation::getRainbowColors( float time )
 void Simulation::demoSpawner()
 {
     sf::Vector2f spawnPos = {m_window->getSize().x * 0.5f, m_window->getSize().y * 0.25f};
-    int maxBalls = 1000;
-    float spawnDelay = 0.01f;
-    float spawnSpeed = 50;
+    int maxBalls = 650;
+    float spawnDelay = 0.05f;
+    float spawnSpeed = 40;
+    int minRad = 4;
+    int maxRad = 14;
 
     if(m_objects.size() < maxBalls && m_clock.getElapsedTime().asSeconds() >= spawnDelay)
     {
         m_clock.restart().asSeconds();
-        Object& ob = addNewObject(spawnPos, m_ballRad);
-        ob.addVelocity(sf::Vector2f(5,10), getSubDeltaTime());
-        ob.color = getRainbowColors(m_time);
+        Object& ob = addNewObject(spawnPos, (rand() % maxRad) + minRad);
+
+        float time = getTime();
+        
+        float angle =  time * 3.1415936 * 0.05;
+
+        ob.addVelocity( spawnSpeed * sf::Vector2f(cos(angle), sin(angle)), getSubDeltaTime());
+        ob.color = getRainbowColors(time);
 
     }
 
@@ -288,21 +369,52 @@ void Simulation::checkCollisions()
             }
         }
     }
+
+    mouseCollisionsBall();
+}
+
+void Simulation::mouseCollisionsBall()
+{
+    if(m_mouseColActive)
+    {
+        for(auto &obj : m_objects)
+        {
+            sf::Vector2f axis = m_mousePosView - obj.currentPos;
+            float dist = sqrt(axis.x * axis.x + axis.y * axis.y);
+            float minDist = m_mouseColRad + obj.radius;
+            if(dist < minDist)
+            {
+                if(!obj.isPinned)
+                {
+                    float moveAmount = minDist - dist;
+                    float perc = (moveAmount / dist) * 0.5;
+                    sf::Vector2f off = axis * perc;
+                    obj.currentPos -= off;
+                }
+            }
+
+        }
+    }
 }
 
 void Simulation::updateObjects( float subDeltaTime )
 {
     for( auto &obj : m_objects)
     {
-        obj.update(subDeltaTime);
+        if(!obj.isPinned)
+            obj.update(subDeltaTime);
     }
 }
 
 void Simulation::applyGravityToObjects( )
 {
-    for(auto &obj : m_objects)
+    if(m_gravityActive)
     {
-        obj.accelerate( obj.mass * GRAVITY);
+        for(auto &obj : m_objects)
+        {
+            obj.accelerate( obj.mass * GRAVITY);
+        }
+
     }
 }
 
@@ -323,6 +435,15 @@ void Simulation::render( sf::RenderTarget &target )
         circleS.setOutlineThickness(obj.outlineThic);
 
         target.draw(circleS);
+    }
+
+    if(m_mouseColActive)
+    {
+        float newRad = m_mouseColRad - m_mouseColShape.getOutlineThickness();
+        m_mouseColShape.setRadius(newRad);
+        m_mouseColShape.setOrigin(newRad, newRad);
+        m_mouseColShape.setPosition(m_mousePosView);
+        target.draw(m_mouseColShape);
     }
 }
 

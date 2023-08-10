@@ -45,3 +45,8 @@ void Object::accelerate( sf::Vector2f acc )
 {
     acceleration += acc;
 }
+
+void Object::togglePinned()
+{
+    isPinned = !isPinned;
+}

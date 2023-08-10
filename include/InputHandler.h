@@ -9,6 +9,10 @@ class InputHandler
         static bool isLeftMouseClicked();
         static bool isRightMouseClicked();
         static bool isCClicked();
+        static bool isSpaceClicked();
+        static bool isGClicked();
+        static bool isPClicked();
+        static bool isMiddleMouseClicked();
 };
 
 
