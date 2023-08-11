@@ -1,9 +1,9 @@
 #ifndef VERLETOBJECT_H
 #define VERLETOBJECT_H
+#pragma once
 
 #include "SFML/System/Vector2.hpp"
 #include <SFML/Graphics.hpp>
-#pragma once
 
 struct Object
 {

@@ -1,7 +1,4 @@
 #include "../include/Grid.h"
-#include <cstddef>
-#include <iostream>
-#include <vector>
 
 
 const void Grid::deleteGridMap()
@@ -17,7 +14,6 @@ void Grid::initGrid(float gridSize, sf::RenderWindow& window)
     m_width = window.getSize().x / gridSize;
     m_height = window.getSize().y / gridSize;
     
-    std::cout << m_height << '\n';
 
     
 }

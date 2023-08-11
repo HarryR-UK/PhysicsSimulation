@@ -1,5 +1,6 @@
 #ifndef GRID_H
 #define GRID_H
+#pragma once
 #include "Global.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include <_types/_uint8_t.h>
@@ -7,7 +8,6 @@
 #include <sys/types.h>
 #include <vector>
 
-#pragma once
 
 struct Cell
 {

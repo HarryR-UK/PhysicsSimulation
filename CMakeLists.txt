@@ -4,7 +4,7 @@ project(PhysicsSimulation2)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 #
-set(SOURCE_FILES include/Global.h src/main.cpp src/Game.cpp include/Game.h src/Time.cpp include/Time.h )
+set(SOURCE_FILES src/InputHandler.cpp src/main.cpp src/Game.cpp src/Simulation.cpp src/Object.cpp src/Time.cpp include/InputHandler.h include/Time.h include/Game.h include/Simulation.h include/Object.h include/Time.h )
 add_executable(PhysicsSimulation2 ${SOURCE_FILES})
 include_directories(/usr/local/include)
 

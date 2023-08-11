@@ -1,7 +1,4 @@
 #include "../include/InputHandler.h"
-#include "SFML/System/Err.hpp"
-#include "SFML/Window/Keyboard.hpp"
-#include "SFML/Window/Mouse.hpp"
 
 
 bool InputHandler::isLeftMouseClicked()

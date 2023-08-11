@@ -1,6 +1,5 @@
 #include "../include/Object.h"
-#include "SFML/System/Vector2.hpp"
-#include <iostream>
+
 
 Object::Object( sf::Vector2f startPos, float r, int id, bool pinned )
     : currentPos { startPos }

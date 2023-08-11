@@ -1,0 +1,5 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/testTheOne/sfmlProjects/PhysicsSimulation2 -B /Users/testTheOne/sfmlProjects/PhysicsSimulation2/cmake-build-debug
+-- Found SFML 2.6.0 in /Library/Frameworks/SFML.framework/Resources/CMake
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/testTheOne/sfmlProjects/PhysicsSimulation2/cmake-build-debug

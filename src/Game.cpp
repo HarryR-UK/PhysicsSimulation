@@ -1,8 +1,6 @@
 #include "../include/Game.h"
+#include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
-#include <iostream>
-#include <thread>
-#include <vector>
 
 const bool Game::isRunning() const
 {
@@ -16,8 +14,8 @@ Game::~Game()
 
 
 Game::Game()
-    : WINDOW_WIDTH(1500),
-    WINDOW_HEIGHT(1050)
+    : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2),
+    WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
     /*
     : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2), 
     WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
@@ -53,7 +51,7 @@ void Game::initWindow()
     
     m_contextSettings.antialiasingLevel = 3;
 
-    m_window = new sf::RenderWindow(m_videoMode, "PHYSICS!",  sf::Style::Close, m_contextSettings);
+    m_window = new sf::RenderWindow(m_videoMode, "PHYSICS!",  sf::Style::Close);
     m_window->setFramerateLimit(244);
 }
 
@@ -90,7 +88,32 @@ void Game::pollEvents()
 
 void Game::getInput()
 {
-    
+    if(m_window->hasFocus())
+    {
+        if(InputHandler::isFClicked())
+        {
+            if(!m_isKeyHeld)
+            {
+                m_isKeyHeld = true;
+
+                m_videoMode.width = sf::VideoMode::getDesktopMode().width / 1.2;
+                m_videoMode.height = sf::VideoMode::getDesktopMode().height / 1.05;
+            
+                if(m_isFullScreen)
+                {
+                    m_window->create(m_videoMode, "PHYSICS", sf::Style::Close);
+                }
+                else
+                    m_window->create(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "PHYSICS", sf::Style::None);
+
+                m_isFullScreen = !m_isFullScreen;
+            }
+
+        }
+        else{
+            m_isKeyHeld = false;
+        }
+    }
 }
 
 void Game::updateMousePos()
@@ -108,6 +131,7 @@ void Game::update()
     getInput();
     updateMousePos();
     m_sim.updateUI();
+    m_sim.simulate();
 
 }
 
@@ -124,7 +148,7 @@ void Game::render()
 
 void Game::startGLoop()
 {
-    m_sim.startSim();
+    // m_sim.startSim();
     while(this->isRunning())
     {
         Time::initDeltaTime();
@@ -135,5 +159,9 @@ void Game::startGLoop()
         this->render();
 
     }
-    m_sim.joinUpdateThread();
+    // m_sim.joinUpdateThread();
 }
+
+// TODO: change to set variables for the window width and height so that the thread which runns the simulation
+// no longer uses the window at all times, this means i can allow the user to change in and out of fullscreen 
+// and then trigger a function in the simulation class which re-assigns the window width and heihgt

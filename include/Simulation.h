@@ -1,5 +1,6 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
+#pragma once
 #include "Global.h"
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
@@ -18,7 +19,6 @@
 #include "Object.h"
 #include "Grid.h"
 #include "InputHandler.h"
-#pragma once
 
 class Simulation
 {
@@ -62,13 +62,21 @@ class Simulation
         bool m_mouseColActive = false;
         sf::CircleShape m_mouseColShape;
 
-        float m_mouseColMaxRad = 200;
+        float m_mouseColMaxRad = 300;
         float m_mouseColMinRad = 4;
 
 
         bool m_isKeyHeld = false;
         bool m_gravityActive = true;
         bool m_paused = false;
+
+        bool m_buildModeActive = false;
+        bool m_newBallPin = false;
+
+        const int MAXBALLS = 1000;
+
+        sf::Clock m_spawnClock;
+        float m_spawnNewBallDelay = 0.1;
 
 
 
@@ -87,16 +95,19 @@ class Simulation
         void mouseCollisionsBall( );
         void getInput( );
 
-        void demoSpawner( );
 
         void ballGrabbedMovement( );
+
         bool mouseHoveringBall( );
+        bool mouseHoveringBall( int& deleteID );
 
         void calcMouseVelocity( );
         void setDeltaTime( );
 
         sf::Color getRainbowColors( float time );
-        void simulate( );
+
+        void nonBuildModeMouseControls();
+        void buildModeMouseControls();
 
     public:
 
@@ -109,7 +120,10 @@ class Simulation
 
 
         void startSim( );
+        void simulate( );
+
         void updateUI( );
+        void demoSpawner( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
         void joinUpdateThread( );
