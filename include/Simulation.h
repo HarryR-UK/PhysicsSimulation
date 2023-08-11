@@ -62,6 +62,9 @@ class Simulation
         bool m_mouseColActive = false;
         sf::CircleShape m_mouseColShape;
 
+        float m_mouseColMaxRad = 200;
+        float m_mouseColMinRad = 4;
+
 
         bool m_isKeyHeld = false;
         bool m_gravityActive = true;
@@ -77,7 +80,9 @@ class Simulation
         void updateMousePos( );
 
         void applyGravityToObjects( );
+
         void checkConstraints( );
+
         void checkCollisions( );
         void mouseCollisionsBall( );
         void getInput( );
@@ -107,7 +112,8 @@ class Simulation
         void updateUI( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
-        void joinUpdateThread();
+        void joinUpdateThread( );
+        void changeMouseRadius( float change );
 
         const void setWindow( sf::RenderWindow& window );
         const void setSubSteps( int substeps );

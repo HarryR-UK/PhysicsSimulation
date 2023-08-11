@@ -32,3 +32,17 @@ bool InputHandler::isMiddleMouseClicked()
 {
     return sf::Mouse::isButtonPressed(sf::Mouse::Middle);
 }
+
+bool InputHandler::isFClicked()
+{
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::F);
+}
+
+bool InputHandler::isEClicked()
+{
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::E);
+}
+bool InputHandler::isQClicked()
+{
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
+}

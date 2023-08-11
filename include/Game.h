@@ -32,6 +32,9 @@ class Game
         void initFont();
         void initText();
 
+        bool m_isKeyHeld = false;
+        bool m_isFullScreen = false;
+
 
         // FONT
         sf::Font m_mainFont;

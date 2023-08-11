@@ -13,6 +13,9 @@ class InputHandler
         static bool isGClicked();
         static bool isPClicked();
         static bool isMiddleMouseClicked();
+        static bool isFClicked();
+        static bool isEClicked();
+        static bool isQClicked();
 };
 
 

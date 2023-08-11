@@ -60,7 +60,7 @@ Object& Simulation::addNewObject( sf::Vector2f startPos, float r, bool pinned )
 
 void Simulation::initText()
 {
-    if(!m_font.loadFromFile("../res/fonts/open-sans/OpenSans-Semibold.ttf"))
+    if(!m_font.loadFromFile("./res/fonts/open-sans/OpenSans-Semibold.ttf"))
     {
         std::cout << "ERROR LOADING FILE IN SIMULATION CLASS" << '\n';
     }
@@ -140,10 +140,8 @@ void Simulation::getInput()
         if(!m_isKeyHeld)
         {
             m_isKeyHeld = true;
-            /*
             for(auto& obj : m_objects)
                 obj.setVelocity({0,0}, getSubDeltaTime());
-            */
             m_paused = !m_paused;
         }
     }
@@ -159,7 +157,7 @@ void Simulation::getInput()
         m_isKeyHeld = false;
     }
 
-    if(InputHandler::isMiddleMouseClicked())
+    if(InputHandler::isQClicked())
     {
         if(!m_isMouseHeld && m_grabbingBall)
         {
@@ -177,6 +175,36 @@ void Simulation::getInput()
     }
 
 }
+
+void Simulation::changeMouseRadius( float change )
+{
+    if(m_mouseColActive)
+    {
+        m_mouseColRad += change;
+        if(m_mouseColRad < m_mouseColMinRad)
+            m_mouseColRad = m_mouseColMinRad;
+
+        if(m_mouseColRad > m_mouseColMaxRad)
+            m_mouseColRad = m_mouseColMaxRad;
+
+    }
+    else if(m_grabbingBall){
+        for(auto &obj : m_objects)
+        {
+            if(obj.isGrabbed)
+            {
+                obj.radius += change;
+                if(obj.radius < m_mouseColMinRad)
+                    obj.radius = m_mouseColMinRad;
+
+                if(obj.radius > m_mouseColMaxRad)
+                    obj.radius = m_mouseColMaxRad;
+            }
+        }
+    }
+
+}
+
 
 void Simulation::updateMousePos()
 {
