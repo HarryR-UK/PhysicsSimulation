@@ -115,6 +115,9 @@ class Simulation
         void buildModeMouseControls();
 
         void deleteBall( int& delID );
+        void deleteStick( int& delID );
+
+        const float getDistance( const Object& obj1, const Object& obj2 );
 
     public:
 
@@ -123,6 +126,7 @@ class Simulation
         ~Simulation();
 
         void render( sf::RenderTarget& target );
+        void renderSticks( sf::RenderTarget& target );
         void renderUI( sf::RenderTarget& target );
 
 
@@ -133,7 +137,7 @@ class Simulation
         void demoSpawner( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
-        Stick& addNewStick( Object& obj1, Object& obj2, float length );
+        Stick& addNewStick( Object* obj1, Object* obj2, float length );
 
         void joinUpdateThread( );
         void changeMouseRadius( float change );

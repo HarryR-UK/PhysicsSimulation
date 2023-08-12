@@ -1,4 +1,6 @@
 #include "../include/Simulation.h"
+#include <__algorithm/remove.h>
+#include <vector>
 
 
 Simulation::~Simulation()
@@ -10,6 +12,7 @@ Simulation::Simulation()
 
 
     m_objects.reserve(MAXBALLS);
+    m_sticks.reserve(MAXBALLS);
     initText();
     m_mouseColShape.setRadius(m_mouseColRad);
     m_mouseColShape.setPointCount(20);
@@ -56,9 +59,9 @@ Object& Simulation::addNewObject( sf::Vector2f startPos, float r, bool pinned )
 }
 
 
-Stick& Simulation::addNewStick( Object& obj1, Object& obj2, float length )
+Stick& Simulation::addNewStick( Object* obj1, Object* obj2, float length )
 {
-    return m_sticks.emplace_back(obj1, obj2, length, m_sticks.size());
+    return m_sticks.emplace_back(*obj1, *obj2, length, m_sticks.size());
 }
 
 void Simulation::initText()
@@ -155,7 +158,10 @@ void Simulation::buildModeMouseControls()
             // edits the delID by reference to the one hovering
             if(mouseHoveringBall(delId))
             {
-                deleteBall(delId);
+
+                m_objects[delId].isStick ? deleteStick(delId) : deleteBall(delId);
+
+                // deleteBall(delId);
             }
 
         }
@@ -163,6 +169,18 @@ void Simulation::buildModeMouseControls()
     else{
         m_isMouseHeld = false;
     }
+
+}
+
+const float Simulation::getDistance( const Object& obj1, const Object& obj2 )
+{
+    sf::Vector2f axis = obj2.currentPos - obj1.currentPos;
+    return sqrt(axis.x * axis.x + axis.y * axis.y);
+}
+
+
+void Simulation::deleteStick( int& delID )
+{
 
 }
 
@@ -174,15 +192,16 @@ void Simulation::deleteBall(int& delID)
         if(m_objects[i].ID == delID)
         {
             m_objects.erase(m_objects.begin() + i);
+        }
 
-            // resets all objects ID
-            for(int j = 0; j < m_objects.size(); ++j)
-            {
-                m_objects[j].ID = j;
-            }
+        
+        for(int j = 0; j < m_objects.size(); ++j)
+        {
+            m_objects[j].ID = j;
         }
 
     }
+
 }
 
 
@@ -190,10 +209,13 @@ void Simulation::deleteBall(int& delID)
 
 void Simulation::getInput()
 {
-        if(!m_buildModeActive)
-            nonBuildModeMouseControls();
-        else if(m_objects.size() < MAXBALLS)
-            buildModeMouseControls();
+
+    //DEBUG
+
+    if(!m_buildModeActive)
+        nonBuildModeMouseControls();
+    else if(m_objects.size() < MAXBALLS)
+        buildModeMouseControls();
 
     if(InputHandler::isCClicked())
     {
@@ -201,6 +223,7 @@ void Simulation::getInput()
         {
             m_isKeyHeld = true;
             m_objects.clear();
+            m_sticks.clear();
         }
 
     }
@@ -381,8 +404,6 @@ bool Simulation::mouseHoveringBall( int& delteID )
         
         if(dist < obj.radius && !m_grabbingBall)
         {
-            obj.isGrabbed = true;
-            obj.outlineThic = 1;
             delteID = obj.ID;
             return true;
         }
@@ -449,10 +470,23 @@ void Simulation::demoSpawner()
 
 void Simulation::initStick()
 {
-    Object& ob1 = addNewObject(sf::Vector2f(100,100), 5);
-    Object& ob2 = addNewObject(sf::Vector2f(120,100), 5);
+    Object& ob1 = addNewObject(sf::Vector2f(100,100), 8);
+    ob1.color = sf::Color::Red;
+    Object& ob2 = addNewObject(sf::Vector2f(150,100), 8);
+    ob2.color = sf::Color::Magenta;
+    Object& ob3 = addNewObject(sf::Vector2f(150,150), 8);
+    ob3.color = sf::Color::Cyan;
+    Object& ob4 = addNewObject(sf::Vector2f(100,150), 8);
+    ob4.color = sf::Color::Blue;
     
-    Stick& st = addNewStick(m_objects[0], m_objects[1], 20);
+    Stick& st = addNewStick(&ob1, &ob2,  50);
+    Stick& st2 = addNewStick(&ob2, &ob3, 50);
+    Stick& st3 = addNewStick(&ob3, &ob4, 50);
+    Stick& st4 = addNewStick(&ob4, &ob1, 50);
+    sf::Vector2f ax = ob4.currentPos - ob2.currentPos;
+    float dist = sqrt(ax.x * ax.x + ax.y * ax.y);
+    Stick& st5 = addNewStick(&ob4, &ob2, dist);
+
 
 }
 
@@ -602,6 +636,8 @@ void Simulation::render( sf::RenderTarget &target )
 
     }
 
+    renderSticks(target);
+
     if(m_buildModeActive || m_mouseColActive)
     {
         float newRad = m_mouseColRad - m_mouseColShape.getOutlineThickness();
@@ -621,6 +657,21 @@ void Simulation::render( sf::RenderTarget &target )
 
 
         target.draw(m_mouseColShape);
+    }
+}
+
+void Simulation::renderSticks( sf::RenderTarget &target )
+{
+    for(auto stick : m_sticks)
+    {
+        sf::Vertex line[2];
+        line[0].position = stick.getObject1()->currentPos;
+        line[1].position = stick.getObject2()->currentPos;
+
+        line[0].color = stick.getObject1()->color;
+        line[1].color = stick.getObject2()->color;
+
+        target.draw(line, 2, sf::LineStrip);
     }
 }
 

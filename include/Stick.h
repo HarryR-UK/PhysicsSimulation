@@ -13,6 +13,8 @@ struct Stick
     uint8_t ID;
     float length;
 
+    bool isActive = true;
+
     Stick( Object& obj1, Object& obj2, float length, uint8_t ID);
     void update( );
 

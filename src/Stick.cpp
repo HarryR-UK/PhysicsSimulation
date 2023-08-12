@@ -8,7 +8,8 @@ Stick::Stick( Object& obj1, Object& obj2, float length, uint8_t ID )
     , length { length }
     , ID { ID }
 {
-
+    obj1Ptr->isStick = true;
+    obj2Ptr->isStick = true;
 }
 
 
@@ -30,7 +31,8 @@ void Stick::resetObjectReferences( Object& obj1, Object& obj2 )
 
 void Stick::update()
 {
-    std::cout << obj1Ptr->currentPos.x << ", " << obj1Ptr->currentPos.y << '\n';
+    if(!isActive)
+        return;
     sf::Vector2f axis = obj2Ptr->currentPos - obj1Ptr->currentPos;
     float distance = sqrt(axis.x * axis.x + axis.y * axis.y);
     float diff = length - distance;
