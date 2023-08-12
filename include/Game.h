@@ -1,16 +1,16 @@
-#include "SFML/Window/ContextSettings.hpp"
-#include "Simulation.h"
 #ifndef GAME_H
+#define GAME_H
 #pragma once
 
 #include <iostream>
 #include <vector>
+#include "SFML/Window/ContextSettings.hpp"
+#include "Simulation.h"
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include "../include/Time.h"
 
 class Game
 {

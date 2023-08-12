@@ -1,5 +1,6 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
+#include "Stick.h"
 #pragma once
 #include "Global.h"
 #include "SFML/Graphics/CircleShape.hpp"
@@ -35,6 +36,8 @@ class Simulation
 
         std::vector<Object> m_objects = {};
         std::vector<Object*> m_ptrObjects = {};
+
+        std::vector<Stick> m_sticks = {};
 
         int m_ballRad = BALL_RADIUS;
 
@@ -84,8 +87,10 @@ class Simulation
         void initText( );
 
         void updateObjects( float subDeltaTime );
+        void updateSticks( );
         void updateText( );
         void updateMousePos( );
+
 
         void applyGravityToObjects( );
 
@@ -109,6 +114,8 @@ class Simulation
         void nonBuildModeMouseControls();
         void buildModeMouseControls();
 
+        void deleteBall( int& delID );
+
     public:
 
     public:
@@ -126,8 +133,12 @@ class Simulation
         void demoSpawner( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
+        Stick& addNewStick( Object& obj1, Object& obj2, float length );
+
         void joinUpdateThread( );
         void changeMouseRadius( float change );
+
+        void initStick();
 
         const void setWindow( sf::RenderWindow& window );
         const void setSubSteps( int substeps );

@@ -55,9 +55,15 @@ Object& Simulation::addNewObject( sf::Vector2f startPos, float r, bool pinned )
     return m_objects.emplace_back(startPos, r, m_objects.size(), pinned); 
 }
 
+
+Stick& Simulation::addNewStick( Object& obj1, Object& obj2, float length )
+{
+    return m_sticks.emplace_back(obj1, obj2, length, m_sticks.size());
+}
+
 void Simulation::initText()
 {
-    if(!m_font.loadFromFile("./res/fonts/open-sans/OpenSans-Semibold.ttf"))
+    if(!m_font.loadFromFile("../res/fonts/open-sans/OpenSans-Semibold.ttf"))
     {
         std::cout << "ERROR LOADING FILE IN SIMULATION CLASS" << '\n';
     }
@@ -135,6 +141,7 @@ void Simulation::buildModeMouseControls()
             if(m_spawnClock.getElapsedTime().asSeconds() > m_spawnNewBallDelay)
             {
                 Object& obj = addNewObject(m_mousePosView, m_mouseColRad, m_newBallPin);
+                obj.color = getRainbowColors(m_time);
                 m_spawnClock.restart();
             }
     }
@@ -145,20 +152,10 @@ void Simulation::buildModeMouseControls()
         {
             m_isMouseHeld = true;
             int delId;
+            // edits the delID by reference to the one hovering
             if(mouseHoveringBall(delId))
             {
-                for(std::size_t i = 0; i < m_objects.size(); ++i)
-                {
-                    if(m_objects[i].ID == delId)
-                    {
-                        m_objects.erase(m_objects.begin() + i);
-                        for(int j = 0; j < m_objects.size(); ++j)
-                        {
-                            m_objects[j].ID = j;
-                        }
-                    }
-                        
-                }
+                deleteBall(delId);
             }
 
         }
@@ -168,6 +165,27 @@ void Simulation::buildModeMouseControls()
     }
 
 }
+
+void Simulation::deleteBall(int& delID)
+{
+
+    for(std::size_t i = 0; i < m_objects.size(); ++i)
+    {
+        if(m_objects[i].ID == delID)
+        {
+            m_objects.erase(m_objects.begin() + i);
+
+            // resets all objects ID
+            for(int j = 0; j < m_objects.size(); ++j)
+            {
+                m_objects[j].ID = j;
+            }
+        }
+
+    }
+}
+
+
 
 
 void Simulation::getInput()
@@ -304,7 +322,8 @@ void Simulation::simulate( )
                     if(m_gravityActive)
                         applyGravityToObjects();
                     updateObjects( getSubDeltaTime() );
-                    demoSpawner();
+                    updateSticks();
+                    // demoSpawner();
 
                 }
                 ballGrabbedMovement();
@@ -428,6 +447,15 @@ void Simulation::demoSpawner()
 
 }
 
+void Simulation::initStick()
+{
+    Object& ob1 = addNewObject(sf::Vector2f(100,100), 5);
+    Object& ob2 = addNewObject(sf::Vector2f(120,100), 5);
+    
+    Stick& st = addNewStick(m_objects[0], m_objects[1], 20);
+
+}
+
 void Simulation::checkConstraints()
 {
     for(auto &obj : m_objects)
@@ -517,6 +545,14 @@ void Simulation::updateObjects( float subDeltaTime )
     {
         if(!obj.isPinned)
             obj.update(subDeltaTime);
+    }
+}
+
+void Simulation::updateSticks( )
+{
+    for(auto &stick : m_sticks)
+    {
+        stick.update();
     }
 }
 

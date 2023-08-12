@@ -28,7 +28,7 @@ Game::Game()
     initText();
 
     m_sim.setWindow(*m_window);
-    m_sim.setSubSteps(12);
+    m_sim.setSubSteps(8);
 
 }
 
@@ -149,6 +149,7 @@ void Game::render()
 void Game::startGLoop()
 {
     // m_sim.startSim();
+    m_sim.initStick();
     while(this->isRunning())
     {
         Time::initDeltaTime();
