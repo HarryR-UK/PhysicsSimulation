@@ -1,6 +1,6 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
-#include "Stick.h"
+#include <map>
 #pragma once
 #include "Global.h"
 #include "SFML/Graphics/CircleShape.hpp"
@@ -20,6 +20,8 @@
 #include "Object.h"
 #include "Grid.h"
 #include "InputHandler.h"
+#include "Stick.h"
+
 
 class Simulation
 {
@@ -38,6 +40,8 @@ class Simulation
         std::vector<Object*> m_ptrObjects = {};
 
         std::vector<Stick> m_sticks = {};
+
+        std::map<int, Object*> m_objectsByID = {};
 
         int m_ballRad = BALL_RADIUS;
 
@@ -81,6 +85,8 @@ class Simulation
         sf::Clock m_spawnClock;
         float m_spawnNewBallDelay = 0.1;
 
+        int newID = 0;
+        int newStickID = 0;
 
 
     private:
@@ -117,7 +123,7 @@ class Simulation
         void deleteBall( int& delID );
         void deleteStick( int& delID );
 
-        const float getDistance( const Object& obj1, const Object& obj2 );
+        const float getDistance( const Object& obj1,  const Object& obj2 );
 
     public:
 
@@ -137,7 +143,7 @@ class Simulation
         void demoSpawner( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
-        Stick& addNewStick( Object* obj1, Object* obj2, float length );
+        Stick& addNewStick( int ID1, int ID2, float length );
 
         void joinUpdateThread( );
         void changeMouseRadius( float change );

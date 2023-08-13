@@ -4,18 +4,24 @@
 #include <_types/_uint8_t.h>
 #include <cmath>
 #include "Object.h"
+#include <vector>
 
 struct Stick
 {
-    Object* obj1Ptr;
-    Object* obj2Ptr;
+    Object* obj1Ptr = nullptr;
+    Object* obj2Ptr = nullptr;
+    std::vector<Object>* objectsRef;
     
-    uint8_t ID;
+    int ID;
+    
+    int objID1;
+    int objID2;
+
     float length;
 
     bool isActive = true;
 
-    Stick( Object& obj1, Object& obj2, float length, uint8_t ID);
+    Stick( Object* obj1, Object* obj2, float length, int ID );
     void update( );
 
     Object* getObject1( );

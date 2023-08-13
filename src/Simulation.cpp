@@ -1,7 +1,8 @@
 #include "../include/Simulation.h"
 #include <__algorithm/remove.h>
+#include <map>
 #include <vector>
-
+#define LOG(x) std::cout << x << '\n'
 
 Simulation::~Simulation()
 {
@@ -55,13 +56,19 @@ const float Simulation::getTime() const
 
 Object& Simulation::addNewObject( sf::Vector2f startPos, float r, bool pinned )
 {
-    return m_objects.emplace_back(startPos, r, m_objects.size(), pinned); 
+    Object& obj =  m_objects.emplace_back(startPos, r,newID , pinned); 
+    m_objectsByID[newID] = &obj;
+    newID ++;
+    return obj;
 }
 
 
-Stick& Simulation::addNewStick( Object* obj1, Object* obj2, float length )
+Stick& Simulation::addNewStick( int ID1, int ID2, float length )
 {
-    return m_sticks.emplace_back(*obj1, *obj2, length, m_sticks.size());
+    Object* obj1 = m_objectsByID[ID1];
+    Object* obj2 = m_objectsByID[ID2];
+    return m_sticks.emplace_back(obj1, obj2, length, newStickID);
+    newStickID ++;
 }
 
 void Simulation::initText()
@@ -181,8 +188,29 @@ const float Simulation::getDistance( const Object& obj1, const Object& obj2 )
 
 void Simulation::deleteStick( int& delID )
 {
+            Object& delObj = m_objects[delID];
+            std::erase_if(m_sticks, [&delObj](Stick& stick){
+                    bool deleted = false;
+                    if(stick.obj1Ptr == &delObj)
+                    {
+                        delObj.isStick = false;
+                        deleted = true;
+                    }
+                    if(stick.obj2Ptr == &delObj)
+                    {
+                        delObj.isStick = false;
+                        deleted = true;
+                    }
+
+                    return deleted;
+            });
+
+            
+
 
 }
+
+
 
 void Simulation::deleteBall(int& delID)
 {
@@ -191,16 +219,17 @@ void Simulation::deleteBall(int& delID)
     {
         if(m_objects[i].ID == delID)
         {
+            std::cout << "DELETED ID: " << m_objects[i].ID << '\n';
             m_objects.erase(m_objects.begin() + i);
         }
-
-        
-        for(int j = 0; j < m_objects.size(); ++j)
-        {
-            m_objects[j].ID = j;
-        }
-
     }
+
+    /*
+    for(int j = 0; j < m_objects.size(); ++j)
+    {
+        m_objects[j].ID = j;
+    }
+    */
 
 }
 
@@ -210,7 +239,14 @@ void Simulation::deleteBall(int& delID)
 void Simulation::getInput()
 {
 
+
+    /*
     //DEBUG
+    for(auto& stick : m_sticks)
+    {
+        std::cout << stick.ID << '\n';
+    }
+    */
 
     if(!m_buildModeActive)
         nonBuildModeMouseControls();
@@ -479,14 +515,8 @@ void Simulation::initStick()
     Object& ob4 = addNewObject(sf::Vector2f(100,150), 8);
     ob4.color = sf::Color::Blue;
     
-    Stick& st = addNewStick(&ob1, &ob2,  50);
-    Stick& st2 = addNewStick(&ob2, &ob3, 50);
-    Stick& st3 = addNewStick(&ob3, &ob4, 50);
-    Stick& st4 = addNewStick(&ob4, &ob1, 50);
-    sf::Vector2f ax = ob4.currentPos - ob2.currentPos;
-    float dist = sqrt(ax.x * ax.x + ax.y * ax.y);
-    Stick& st5 = addNewStick(&ob4, &ob2, dist);
-
+    Stick& s = addNewStick(ob1.ID, ob2.ID, 50);
+    //Stick& s1 = addNewStick(ob2.ID, ob3.ID, 50, &m_objects);
 
 }
 

@@ -2,15 +2,16 @@
 #include <iostream>
 
 
-Stick::Stick( Object& obj1, Object& obj2, float length, uint8_t ID )
-    : obj1Ptr{ &obj1 }
-    , obj2Ptr{ &obj2 }
-    , length { length }
-    , ID { ID }
+
+Stick::Stick( Object* obj1, Object* obj2, float length, int ID )
+    : obj1Ptr(obj1)
+      , obj2Ptr(obj2)
+      , length(length)
+      , ID(ID)
 {
-    obj1Ptr->isStick = true;
-    obj2Ptr->isStick = true;
 }
+
+
 
 
 Object* Stick::getObject1( )
@@ -33,6 +34,12 @@ void Stick::update()
 {
     if(!isActive)
         return;
+    
+    obj1Ptr = &objectsRef->at(0);
+    obj2Ptr = &objectsRef->at(1);
+
+
+    
     sf::Vector2f axis = obj2Ptr->currentPos - obj1Ptr->currentPos;
     float distance = sqrt(axis.x * axis.x + axis.y * axis.y);
     float diff = length - distance;

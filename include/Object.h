@@ -5,8 +5,11 @@
 #include "SFML/System/Vector2.hpp"
 #include <SFML/Graphics.hpp>
 
+
+static int nextBallID = 0;
 struct Object
 {
+
     sf::Vector2f currentPos;
     sf::Vector2f oldPos;
     sf::Vector2f acceleration;
@@ -15,8 +18,7 @@ struct Object
     float radius = 8.f;
     float friction = 0.95f;
     float mass = radius / 5.f;
-    int ID;
-    int outlineThic = 0;
+int outlineThic = 0;
     sf::Color outlineColor = sf::Color::White;
 
     bool isPinned = false;
@@ -25,6 +27,7 @@ struct Object
 
     float bounceAmount = 0.5f;
 
+    int ID;
 
     void update( float deltaTime );
     void accelerate( sf::Vector2f acc );

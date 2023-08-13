@@ -5,12 +5,11 @@ Object::Object( sf::Vector2f startPos, float r, int id, bool pinned )
     : currentPos { startPos }
     , oldPos { startPos }
     , radius { r }
-    , ID { id }
     , isPinned { pinned } 
     , acceleration { 0.f, 0.f } 
     , mass { radius / 100 }
 {
-
+    ID = nextBallID ++;
 }
 
 void Object::update( float deltaTime )
