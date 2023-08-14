@@ -10,7 +10,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include "../include/Time.h"
 
 class Game
 {

@@ -52,7 +52,7 @@ const float Simulation::getTime() const
 
 Object& Simulation::addNewObject( sf::Vector2f startPos, float r, bool pinned )
 {
-    return m_objects.emplace_back(startPos, r, m_objects.size(), pinned); 
+    return m_objects.emplaceBack(startPos, r, pinned); 
 }
 
 void Simulation::initText()
@@ -135,6 +135,7 @@ void Simulation::buildModeMouseControls()
             if(m_spawnClock.getElapsedTime().asSeconds() > m_spawnNewBallDelay)
             {
                 Object& obj = addNewObject(m_mousePosView, m_mouseColRad, m_newBallPin);
+                obj.color = getRainbowColors(getTime());
                 m_spawnClock.restart();
             }
     }
@@ -147,18 +148,7 @@ void Simulation::buildModeMouseControls()
             int delId;
             if(mouseHoveringBall(delId))
             {
-                for(std::size_t i = 0; i < m_objects.size(); ++i)
-                {
-                    if(m_objects[i].ID == delId)
-                    {
-                        m_objects.erase(m_objects.begin() + i);
-                        for(int j = 0; j < m_objects.size(); ++j)
-                        {
-                            m_objects[j].ID = j;
-                        }
-                    }
-                        
-                }
+                deleteBall(delId);
             }
 
         }
@@ -169,6 +159,11 @@ void Simulation::buildModeMouseControls()
 
 }
 
+void Simulation::deleteBall( int& delID )
+{
+    std::cout << "DELETE BALL " << delID << '\n';
+    m_objects.deleteElementById(delID);
+}
 
 void Simulation::getInput()
 {
@@ -304,7 +299,7 @@ void Simulation::simulate( )
                     if(m_gravityActive)
                         applyGravityToObjects();
                     updateObjects( getSubDeltaTime() );
-                    demoSpawner();
+                    // demoSpawner();
 
                 }
                 ballGrabbedMovement();
@@ -362,8 +357,6 @@ bool Simulation::mouseHoveringBall( int& delteID )
         
         if(dist < obj.radius && !m_grabbingBall)
         {
-            obj.isGrabbed = true;
-            obj.outlineThic = 1;
             delteID = obj.ID;
             return true;
         }

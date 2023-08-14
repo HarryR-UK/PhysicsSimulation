@@ -1,7 +1,7 @@
 #include "../include/Object.h"
 
 
-Object::Object( sf::Vector2f startPos, float r, int id, bool pinned )
+Object::Object( int id, sf::Vector2f startPos, float r, bool pinned )
     : currentPos { startPos }
     , oldPos { startPos }
     , radius { r }

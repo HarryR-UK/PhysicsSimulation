@@ -32,7 +32,7 @@ struct Object
     const sf::Vector2f getVelocity( float deltaTime ) const;
     void togglePinned();
 
-    Object( sf::Vector2f startPos, float r, int id, bool pinned = false );
+    Object( int id, sf::Vector2f startPos, float r, bool pinned = false );
 
 };
 

@@ -1,5 +1,6 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
+#include "IDVector.h"
 #pragma once
 #include "Global.h"
 #include "SFML/Graphics/CircleShape.hpp"
@@ -32,9 +33,6 @@ class Simulation
 
         sf::Text m_debugText;
         sf::Font m_font;
-
-        std::vector<Object> m_objects = {};
-        std::vector<Object*> m_ptrObjects = {};
 
         int m_ballRad = BALL_RADIUS;
 
@@ -78,6 +76,8 @@ class Simulation
         sf::Clock m_spawnClock;
         float m_spawnNewBallDelay = 0.1;
 
+        IDVector<Object> m_objects;
+
 
 
     private:
@@ -118,6 +118,7 @@ class Simulation
         void render( sf::RenderTarget& target );
         void renderUI( sf::RenderTarget& target );
 
+        void deleteBall( int& delID );
 
         void startSim( );
         void simulate( );
