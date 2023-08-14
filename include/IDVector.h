@@ -84,6 +84,11 @@ class IDVector
             m_container.clear();
         }
 
+        iterator erase(iterator pos)
+        {
+            return m_container.erase(pos);
+        }
+
 
 
         // ranged for loops

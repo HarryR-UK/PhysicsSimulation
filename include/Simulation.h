@@ -20,6 +20,7 @@
 #include "Object.h"
 #include "Grid.h"
 #include "InputHandler.h"
+#include "Stick.h"
 
 class Simulation
 {
@@ -74,16 +75,19 @@ class Simulation
         const int MAXBALLS = 1000;
 
         sf::Clock m_spawnClock;
-        float m_spawnNewBallDelay = 0.1;
+        float m_spawnNewBallDelay = 0.15;
 
         IDVector<Object> m_objects;
+        IDVector<Stick> m_sticks;
 
 
 
     private:
         void initText( );
 
+
         void updateObjects( float subDeltaTime );
+        void updateSticks( );
         void updateText( );
         void updateMousePos( );
 
@@ -115,7 +119,10 @@ class Simulation
         Simulation();
         ~Simulation();
 
+        void initSticks( );
+
         void render( sf::RenderTarget& target );
+        void renderSticks( sf::RenderTarget& target );
         void renderUI( sf::RenderTarget& target );
 
         void deleteBall( int& delID );
@@ -127,6 +134,7 @@ class Simulation
         void demoSpawner( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
+        Stick& addNewStick( int id1, int id2, float length );
         void joinUpdateThread( );
         void changeMouseRadius( float change );
 

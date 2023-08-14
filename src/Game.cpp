@@ -51,7 +51,7 @@ void Game::initWindow()
     
     m_contextSettings.antialiasingLevel = 3;
 
-    m_window = new sf::RenderWindow(m_videoMode, "PHYSICS!",  sf::Style::Close);
+    m_window = new sf::RenderWindow(m_videoMode, "PHYSICS!",  sf::Style::Close, m_contextSettings);
     m_window->setFramerateLimit(244);
 }
 
@@ -101,10 +101,10 @@ void Game::getInput()
             
                 if(m_isFullScreen)
                 {
-                    m_window->create(m_videoMode, "PHYSICS", sf::Style::Close);
+                    m_window->create(m_videoMode, "PHYSICS", sf::Style::Close, m_contextSettings);
                 }
                 else
-                    m_window->create(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "PHYSICS", sf::Style::None);
+                    m_window->create(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "PHYSICS", sf::Style::None, m_contextSettings);
 
                 m_isFullScreen = !m_isFullScreen;
             }
@@ -149,6 +149,7 @@ void Game::render()
 void Game::startGLoop()
 {
     // m_sim.startSim();
+    m_sim.initSticks();
     while(this->isRunning())
     {
         Time::initDeltaTime();

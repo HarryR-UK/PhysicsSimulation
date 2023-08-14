@@ -55,6 +55,11 @@ Object& Simulation::addNewObject( sf::Vector2f startPos, float r, bool pinned )
     return m_objects.emplaceBack(startPos, r, pinned); 
 }
 
+Stick& Simulation::addNewStick(int id1, int id2, float length)
+{
+    return m_sticks.emplaceBack(id1, id2, length);
+}
+
 void Simulation::initText()
 {
     if(!m_font.loadFromFile("./res/fonts/open-sans/OpenSans-Semibold.ttf"))
@@ -161,8 +166,22 @@ void Simulation::buildModeMouseControls()
 
 void Simulation::deleteBall( int& delID )
 {
-    std::cout << "DELETE BALL " << delID << '\n';
+    for(std::size_t i = 0; i < m_sticks.size(); ++i)
+    {
+        if(m_sticks[i].obj1ID == delID || m_sticks[i].obj2ID == delID)
+        {
+            m_sticks.deleteElementById(m_sticks[i].ID);
+            i = 0;
+        }
+        if(m_sticks[i].obj2ID == delID || m_sticks[i].obj1ID == delID)
+        {
+            m_sticks.deleteElementById(m_sticks[i].ID);
+            i = 0;
+        }
+    }
+
     m_objects.deleteElementById(delID);
+    std::cout << "DELETE BALL " << delID << '\n';
 }
 
 void Simulation::getInput()
@@ -299,6 +318,7 @@ void Simulation::simulate( )
                     if(m_gravityActive)
                         applyGravityToObjects();
                     updateObjects( getSubDeltaTime() );
+                    updateSticks();
                     // demoSpawner();
 
                 }
@@ -313,6 +333,35 @@ void Simulation::simulate( )
     */
 
 
+}
+
+void Simulation::initSticks()
+{
+    Object& ob = addNewObject(sf::Vector2f(100,100), 8);
+    Object& ob1 = addNewObject(sf::Vector2f(150,100), 8);
+    Object& ob2 = addNewObject(sf::Vector2f(150,150), 8);
+    Object& ob3 = addNewObject(sf::Vector2f(100,150), 8);
+    ob.color = sf::Color::Red;
+    ob1.color = sf::Color::Magenta;
+
+
+    Stick& s = addNewStick(ob.ID, ob1.ID, 50);
+    Stick& s1 = addNewStick(ob1.ID, ob2.ID, 50);
+    Stick& s2 = addNewStick(ob2.ID, ob3.ID, 50);
+    Stick& s3 = addNewStick(ob3.ID, ob.ID, 50);
+    sf::Vector2f axis = ob3.currentPos - ob1.currentPos;
+    float dist = sqrt(axis.x * axis.x + axis.y * axis.y);
+    Stick& s4 = addNewStick(ob3.ID, ob1.ID, dist);
+
+
+}
+
+void Simulation::updateSticks()
+{
+    for(auto& stick : m_sticks)
+    {
+        stick.update(m_objects.getById(stick.obj1ID), m_objects.getById(stick.obj2ID));
+    }
 }
 
 void Simulation::updateUI()
@@ -532,6 +581,8 @@ void Simulation::applyGravityToObjects( )
 void Simulation::render( sf::RenderTarget &target )
 {
 
+    renderSticks(target);
+
     sf::CircleShape circleS;
     circleS.setPointCount(30);
     sf::CircleShape pinShape;
@@ -578,6 +629,21 @@ void Simulation::render( sf::RenderTarget &target )
 
 
         target.draw(m_mouseColShape);
+    }
+}
+
+void Simulation::renderSticks(sf::RenderTarget &target)
+{
+    for(auto &stick : m_sticks)
+    {
+        sf::Vertex lines[2];
+        lines[0].position = m_objects.getById(stick.obj1ID).currentPos;
+        lines[0].color = m_objects.getById(stick.obj1ID).color;
+        lines[1].position = m_objects.getById(stick.obj2ID).currentPos;
+        lines[1].color = m_objects.getById(stick.obj2ID).color;
+
+        target.draw(lines, 2, sf::LineStrip);
+
     }
 }
 
