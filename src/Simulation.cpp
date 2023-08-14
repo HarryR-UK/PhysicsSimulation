@@ -181,7 +181,6 @@ void Simulation::deleteBall( int& delID )
     }
 
     m_objects.deleteElementById(delID);
-    std::cout << "DELETE BALL " << delID << '\n';
 }
 
 void Simulation::getInput()
@@ -318,10 +317,10 @@ void Simulation::simulate( )
                     if(m_gravityActive)
                         applyGravityToObjects();
                     updateObjects( getSubDeltaTime() );
-                    updateSticks();
-                    // demoSpawner();
+                    demoSpawner();
 
                 }
+                updateSticks();
                 ballGrabbedMovement();
                 checkConstraints();
                 checkCollisions();
@@ -337,6 +336,7 @@ void Simulation::simulate( )
 
 void Simulation::initSticks()
 {
+    /*
     Object& ob = addNewObject(sf::Vector2f(100,100), 8);
     Object& ob1 = addNewObject(sf::Vector2f(150,100), 8);
     Object& ob2 = addNewObject(sf::Vector2f(150,150), 8);
@@ -353,6 +353,25 @@ void Simulation::initSticks()
     float dist = sqrt(axis.x * axis.x + axis.y * axis.y);
     Stick& s4 = addNewStick(ob3.ID, ob1.ID, dist);
 
+*/
+
+    int tempMax = m_objects.size();
+    for(int i = 0; i < 51; ++i)
+    {
+        Object& ob = addNewObject(sf::Vector2f(200 + (i * 20), 400), 8);
+        if(i == 0 || i == 50)
+        {
+            ob.isPinned = true;
+            ob.color = sf::Color::Red;
+        }
+        if(i == 0)
+        {
+            continue;
+        }
+
+        Stick& s = addNewStick(m_objects[tempMax + (i-1)].ID, m_objects[tempMax + i].ID, 20);
+
+    }
 
 }
 
@@ -447,11 +466,11 @@ sf::Color Simulation::getRainbowColors( float time )
 void Simulation::demoSpawner()
 {
     sf::Vector2f spawnPos = {m_window->getSize().x * 0.5f, m_window->getSize().y * 0.25f};
-    int maxBalls = 650;
+    int maxBalls = 300;
     float spawnDelay = 0.05f;
     float spawnSpeed = 40;
-    int minRad = 4;
-    int maxRad = 14;
+    int minRad = 6;
+    int maxRad = 16;
 
     if(m_objects.size() < maxBalls && m_clock.getElapsedTime().asSeconds() >= spawnDelay)
     {
