@@ -492,6 +492,47 @@ void Simulation::simulate( )
 
 void Simulation::initSticks()
 {
+    //cloth
+    int w = 30;
+    int h = 20;
+    int spacing = 20;
+
+    int startX = 100;
+    int startY = 10;
+    float ballRad = 4;
+    int tempMax = m_objects.size();
+
+    for(int y = 0; y <= h; ++y)
+    {
+        for(int x = 0; x <= w; ++x)
+        {
+            Object& obj = addNewObject(sf::Vector2f(startX + x * spacing, startY + y * spacing), ballRad);
+
+            if(x != 0)
+            {
+                Object& leftObj = m_objects[tempMax - 1];
+                Stick& s = addNewStick(obj.ID, leftObj.ID, spacing);
+            }
+
+            if(y != 0)
+            {
+                Object& upObj = m_objects[x+(y - 1) * (w +1)];
+                Stick& s = addNewStick(obj.ID, upObj.ID, spacing);
+            }
+
+            if(y == 0 && x % 2 ==0)
+            {
+                obj.isPinned = true;
+            }
+
+            tempMax = m_objects.size();
+        }
+    }
+
+
+
+
+    /*
     Object& ob = addNewObject(sf::Vector2f(100,100), 8);
     Object& ob1 = addNewObject(sf::Vector2f(150,100), 8);
     Object& ob2 = addNewObject(sf::Vector2f(150,150), 8);
@@ -526,6 +567,8 @@ void Simulation::initSticks()
         Stick& s = addNewStick(m_objects[tempMax + (i-1)].ID, m_objects[tempMax + i].ID, 20);
 
     }
+
+    */
 
 }
 

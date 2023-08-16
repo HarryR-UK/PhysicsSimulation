@@ -64,7 +64,7 @@ class Simulation
         sf::CircleShape m_mouseColShape;
 
         float m_mouseColMaxRad = 300;
-        float m_mouseColMinRad = 4;
+        float m_mouseColMinRad = 1;
 
 
         bool m_isKeyHeld = false;
