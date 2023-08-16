@@ -15,6 +15,7 @@ class InputHandler
         static bool isSpaceClicked();
         static bool isEnterClicked();
 
+        static bool isAClicked();
         static bool isCClicked();
         static bool isEClicked();
         static bool isFClicked();

@@ -172,12 +172,69 @@ void Simulation::buildModeMouseControls()
         }
     }
 
+    if(InputHandler::isAClicked() && !m_stickMaker.finishedStick)
+    {
+        if(!m_buildKeyHeld)
+        {
+            spawnStick();
+        }
+    }
+    else{
+        m_buildKeyHeld = false;
+    }
 
     // if key enter pressed, check the size of the vector in the stickmaker vector, to check it is more than one (otherwise cannot make stick)
     // // if only one then just spawn it as a normal ball
     // also if somethiong line the delete key pressed then clear the vector in the stickMaker
 
 
+}
+
+void Simulation::spawnStick( )
+{
+    if(m_stickMaker.bluePrintSticks.size() == 1)
+    {
+        Object& obj = addNewObject(m_stickMaker.bluePrintSticks[0].shape.getPosition(), m_stickMaker.bluePrintSticks[0].shape.getRadius());
+        obj.color = m_stickMaker.bluePrintSticks[0].shape.getFillColor();
+    }
+    else{
+        
+
+        // create objects and stick
+        int initialSizeOfVector = m_objects.size();
+        for(std::size_t i = 0; i < m_stickMaker.bluePrintSticks.size(); ++i)
+        {
+            sf::CircleShape shape1 = m_stickMaker.bluePrintSticks[i].shape;
+
+            bool pinCheck = m_stickMaker.bluePrintSticks[i].isPinned;
+            Object& obj = addNewObject(shape1.getPosition(), shape1.getRadius(), pinCheck);
+            obj.color = shape1.getFillColor();
+        }
+
+
+        for(std::size_t j = 0; j < m_stickMaker.bluePrintSticks.size() - 1; ++j)
+        {
+            Object& obj1 = m_objects[initialSizeOfVector + j];
+            Object& obj2 = m_objects[initialSizeOfVector + (j+1)];
+
+            float dist = calcDistance(obj1.currentPos, obj2.currentPos);
+            m_stickMaker.idHolder.emplace_back(obj1.ID, obj2.ID, dist);
+
+        }
+
+
+        for(auto& i : m_stickMaker.idHolder)
+        {
+            Stick& stick = addNewStick(i.ID1, i.ID2, i.dist);
+        }
+
+
+    }
+
+
+    m_stickMaker.idHolder.clear();
+    m_stickMaker.bluePrintSticks.clear();
+    m_stickMaker.finishedStick = true;
 }
 
 float Simulation::calcDistance( sf::Vector2f pos1, sf::Vector2f pos2 )
@@ -201,7 +258,7 @@ void Simulation::makeNewStick()
     newStickBluePrint.shape = newStickShape;
     newStickBluePrint.isPinned = m_newBallPin;
 
-    m_stickMaker.m_bluePrintSticks.push_back(newStickBluePrint);
+    m_stickMaker.bluePrintSticks.push_back(newStickBluePrint);
 
     
     
@@ -729,29 +786,29 @@ void Simulation::renderBluePrints( sf::RenderTarget &target )
     if(!m_stickMaker.finishedStick)
     {
         sf::CircleShape bpPinShape;
-        for(std::size_t i = 0; i < m_stickMaker.m_bluePrintSticks.size(); ++i)
+        for(std::size_t i = 0; i < m_stickMaker.bluePrintSticks.size(); ++i)
         {
-            target.draw(m_stickMaker.m_bluePrintSticks[i].shape);
-            if(m_stickMaker.m_bluePrintSticks[i].isPinned)
+            target.draw(m_stickMaker.bluePrintSticks[i].shape);
+            if(m_stickMaker.bluePrintSticks[i].isPinned)
             {
                 bpPinShape.setFillColor(sf::Color::Red);
                 bpPinShape.setOutlineThickness(1);
                 bpPinShape.setOutlineColor(sf::Color::Black);
-                bpPinShape.setRadius((m_stickMaker.m_bluePrintSticks[i].shape.getRadius() * 0.2) - bpPinShape.getOutlineThickness());
+                bpPinShape.setRadius((m_stickMaker.bluePrintSticks[i].shape.getRadius() * 0.2) - bpPinShape.getOutlineThickness());
                 bpPinShape.setOrigin(bpPinShape.getRadius(), bpPinShape.getRadius());
-                bpPinShape.setPosition(m_stickMaker.m_bluePrintSticks[i].shape.getPosition());
+                bpPinShape.setPosition(m_stickMaker.bluePrintSticks[i].shape.getPosition());
 
                 target.draw(bpPinShape);
             }
 
-            if(i < m_stickMaker.m_bluePrintSticks.size() - 1)
+            if(i < m_stickMaker.bluePrintSticks.size() - 1)
             {
                 // draws the lines of the sticks blue prints
                 sf::Vertex lines[2];
-                lines[0].position = m_stickMaker.m_bluePrintSticks[i].shape.getPosition();
-                lines[0].color = m_stickMaker.m_bluePrintSticks[i].shape.getFillColor();
-                lines[1].position = m_stickMaker.m_bluePrintSticks[i+1].shape.getPosition();
-                lines[1].color = m_stickMaker.m_bluePrintSticks[i+1].shape.getFillColor();
+                lines[0].position = m_stickMaker.bluePrintSticks[i].shape.getPosition();
+                lines[0].color = m_stickMaker.bluePrintSticks[i].shape.getFillColor();
+                lines[1].position = m_stickMaker.bluePrintSticks[i+1].shape.getPosition();
+                lines[1].color = m_stickMaker.bluePrintSticks[i+1].shape.getFillColor();
                 target.draw(lines, 2, sf::LineStrip);
             }
 
@@ -760,9 +817,9 @@ void Simulation::renderBluePrints( sf::RenderTarget &target )
 
         // visually show how the stick will look with the mouse
         sf::Vertex lineToMouse[2];
-        int lastIndex = m_stickMaker.m_bluePrintSticks.size() - 1;
-        lineToMouse[0].position = m_stickMaker.m_bluePrintSticks[lastIndex].shape.getPosition();
-        lineToMouse[0].color = m_stickMaker.m_bluePrintSticks[lastIndex].shape.getFillColor();
+        int lastIndex = m_stickMaker.bluePrintSticks.size() - 1;
+        lineToMouse[0].position = m_stickMaker.bluePrintSticks[lastIndex].shape.getPosition();
+        lineToMouse[0].color = m_stickMaker.bluePrintSticks[lastIndex].shape.getFillColor();
         lineToMouse[1].position = m_mousePosView;
         lineToMouse[1].color = sf::Color::White;
         target.draw(lineToMouse, 2, sf::LineStrip);

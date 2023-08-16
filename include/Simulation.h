@@ -150,6 +150,7 @@ class Simulation
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
         Stick& addNewStick( int id1, int id2, float length );
         void makeNewStick( );
+        void spawnStick( );
 
         void joinUpdateThread( );
         void changeMouseRadius( float change );
