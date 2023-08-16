@@ -1,6 +1,7 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 #include "IDVector.h"
+#include <_types/_uint8_t.h>
 #pragma once
 #include "Global.h"
 #include "SFML/Graphics/CircleShape.hpp"
@@ -21,11 +22,13 @@
 #include "Grid.h"
 #include "InputHandler.h"
 #include "Stick.h"
+#include "StickMaker.h"
 
 class Simulation
 {
     private:
         sf::RenderWindow* m_window;
+        
 
         int m_subStepNumber;
         float m_deltaTime;
@@ -55,7 +58,6 @@ class Simulation
         // MOUSE
         sf::Vector2f m_mousePosView;
         sf::Vector2f m_mouseOldPos;
-        bool m_isMouseHeld = false;
         sf::Vector2f m_mouseVelocity;
         float m_mouseColRad = 15;
         bool m_mouseColActive = false;
@@ -66,6 +68,9 @@ class Simulation
 
 
         bool m_isKeyHeld = false;
+        bool m_isMouseHeld = false;
+        bool m_buildKeyHeld = false;
+
         bool m_gravityActive = true;
         bool m_paused = false;
 
@@ -76,14 +81,22 @@ class Simulation
 
         sf::Clock m_spawnClock;
         float m_spawnNewBallDelay = 0.15;
+        float m_spawnNewBluePrintDelay = 0.4f;
 
         IDVector<Object> m_objects;
         IDVector<Stick> m_sticks;
 
+        Builder::StickMaker m_stickMaker;
+
+
+        bool m_demospawnerDone = false;
+
+        static const int s_ballPointCount = 30;
 
 
     private:
         void initText( );
+        float calcDistance( sf::Vector2f pos1, sf::Vector2f pos2 );
 
 
         void updateObjects( float subDeltaTime );
@@ -124,6 +137,7 @@ class Simulation
         void render( sf::RenderTarget& target );
         void renderSticks( sf::RenderTarget& target );
         void renderUI( sf::RenderTarget& target );
+        void renderBluePrints( sf::RenderTarget& target );
 
         void deleteBall( int& delID );
 
@@ -135,6 +149,8 @@ class Simulation
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
         Stick& addNewStick( int id1, int id2, float length );
+        void makeNewStick( );
+
         void joinUpdateThread( );
         void changeMouseRadius( float change );
 

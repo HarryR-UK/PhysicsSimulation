@@ -10,14 +10,19 @@ class InputHandler
     public:
         static bool isLeftMouseClicked();
         static bool isRightMouseClicked();
-        static bool isCClicked();
+        static bool isMiddleMouseClicked();
+
         static bool isSpaceClicked();
+        static bool isEnterClicked();
+
+        static bool isCClicked();
+        static bool isEClicked();
+        static bool isFClicked();
         static bool isGClicked();
         static bool isPClicked();
-        static bool isMiddleMouseClicked();
-        static bool isFClicked();
-        static bool isEClicked();
         static bool isQClicked();
+        static bool isSClicked();
+
 };
 
 

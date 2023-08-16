@@ -43,3 +43,13 @@ bool InputHandler::isQClicked()
 {
     return sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
 }
+
+bool InputHandler::isSClicked()
+{
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+}
+
+bool InputHandler::isEnterClicked()
+{
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::Enter);
+}
