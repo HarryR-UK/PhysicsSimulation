@@ -57,3 +57,7 @@ bool InputHandler::isAClicked()
 {
     return sf::Keyboard::isKeyPressed(sf::Keyboard::A);
 }
+bool InputHandler::isWClicked()
+{
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+}

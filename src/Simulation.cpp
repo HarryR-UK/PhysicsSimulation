@@ -176,7 +176,16 @@ void Simulation::buildModeMouseControls()
     {
         if(!m_buildKeyHeld)
         {
+            m_buildKeyHeld = true;
             spawnStick();
+        }
+    }
+    else if(InputHandler::isWClicked() && m_stickMaker.finishedStick)
+    {
+        if(!m_buildKeyHeld)
+        {
+            m_buildKeyHeld = true;
+            joinToStick();
         }
     }
     else{
@@ -188,6 +197,49 @@ void Simulation::buildModeMouseControls()
     // also if somethiong line the delete key pressed then clear the vector in the stickMaker
 
 
+}
+
+void Simulation::joinToStick()
+{
+    if(!m_gotFirstBallToJoin)
+    {
+        //get first selection ID
+        if(mouseHoveringBall(m_obj1LinkID))
+        {
+
+            Object& obj1 = m_objects.getById(m_obj1LinkID);
+            obj1.isSelected = true;
+            obj1.outlineThic = 1;
+            obj1.outlineColor = sf::Color::White;
+            m_gotFirstBallToJoin = true;
+        }
+
+    }else{
+        // get second selection ID
+
+        if(mouseHoveringBall(m_obj2LinkID))
+        {
+            Object& obj1 = m_objects.getById(m_obj1LinkID);
+            obj1.isSelected = true;
+            obj1.outlineThic = 1;
+            obj1.outlineColor = sf::Color::White;
+            Object& obj2 = m_objects.getById(m_obj2LinkID);
+            obj2.isSelected = true;
+            obj2.outlineThic = 1;
+            obj2.outlineColor = sf::Color::White;
+
+            
+            Stick& s = addNewStick(m_obj1LinkID, m_obj2LinkID, calcDistance(obj1.currentPos, obj2.currentPos));
+            obj1.isSelected = false;
+            obj1.outlineThic = 0;
+
+            obj2.isSelected = false;
+            obj2.outlineThic = 0;
+
+            m_gotFirstBallToJoin = false;
+        }
+        // add the stick
+    }
 }
 
 void Simulation::spawnStick( )
@@ -296,6 +348,9 @@ void Simulation::getInput()
         if(!m_isKeyHeld)
         {
             m_isKeyHeld = true;
+            m_sticks.clear();
+            m_stickMaker.bluePrintSticks.clear();
+            m_stickMaker.idHolder.clear();
             m_objects.clear();
         }
 
@@ -418,7 +473,7 @@ void Simulation::simulate( )
                     if(m_gravityActive)
                         applyGravityToObjects();
                     updateObjects( getSubDeltaTime() );
-                    demoSpawner();
+                    // demoSpawner();
 
                 }
                 updateSticks();

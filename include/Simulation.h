@@ -91,6 +91,10 @@ class Simulation
 
         bool m_demospawnerDone = false;
 
+        bool m_gotFirstBallToJoin = false;
+        int m_obj1LinkID;
+        int m_obj2LinkID;
+
         static const int s_ballPointCount = 30;
 
 
@@ -151,6 +155,7 @@ class Simulation
         Stick& addNewStick( int id1, int id2, float length );
         void makeNewStick( );
         void spawnStick( );
+        void joinToStick( );
 
         void joinUpdateThread( );
         void changeMouseRadius( float change );

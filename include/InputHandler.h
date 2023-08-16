@@ -23,6 +23,7 @@ class InputHandler
         static bool isPClicked();
         static bool isQClicked();
         static bool isSClicked();
+        static bool isWClicked();
 
 };
 

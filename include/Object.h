@@ -21,6 +21,7 @@ struct Object
 
     bool isPinned = false;
     bool isGrabbed = false;
+    bool isSelected = false;
 
     float bounceAmount = 0.5f;
 
