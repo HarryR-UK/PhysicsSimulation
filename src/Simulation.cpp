@@ -465,6 +465,12 @@ void Simulation::simulate( )
             updateText();
             setDeltaTime();
             float subStepDT = getSubDeltaTime();
+            if(m_window->hasFocus())
+            {
+                getInput();
+            }
+            updateMousePos();
+            calcMouseVelocity();
 
             for(int i{getSubSteps()}; i > 0; --i)
             {
@@ -473,7 +479,7 @@ void Simulation::simulate( )
                     if(m_gravityActive)
                         applyGravityToObjects();
                     updateObjects( getSubDeltaTime() );
-                    // demoSpawner();
+                    demoSpawner();
 
                 }
                 updateSticks();
@@ -492,6 +498,7 @@ void Simulation::simulate( )
 
 void Simulation::initSticks()
 {
+    /*
     //cloth
     int w = 30;
     int h = 20;
@@ -529,10 +536,10 @@ void Simulation::initSticks()
         }
     }
 
+*/
 
 
 
-    /*
     Object& ob = addNewObject(sf::Vector2f(100,100), 8);
     Object& ob1 = addNewObject(sf::Vector2f(150,100), 8);
     Object& ob2 = addNewObject(sf::Vector2f(150,150), 8);
@@ -550,6 +557,7 @@ void Simulation::initSticks()
     Stick& s4 = addNewStick(ob3.ID, ob1.ID, dist);
 
 
+    /*
     int tempMax = m_objects.size();
     for(int i = 0; i < 51; ++i)
     {
@@ -580,16 +588,6 @@ void Simulation::updateSticks()
     }
 }
 
-void Simulation::updateUI()
-{
-    if(m_window->hasFocus())
-    {
-        getInput();
-    }
-    updateMousePos();
-    calcMouseVelocity();
-    
-}
 
 void Simulation::joinUpdateThread()
 {

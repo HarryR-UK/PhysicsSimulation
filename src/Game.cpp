@@ -130,7 +130,6 @@ void Game::update()
     pollEvents();
     getInput();
     updateMousePos();
-    m_sim.updateUI();
     m_sim.simulate();
 
 }

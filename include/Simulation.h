@@ -148,7 +148,6 @@ class Simulation
         void startSim( );
         void simulate( );
 
-        void updateUI( );
         void demoSpawner( );
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
