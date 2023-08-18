@@ -20,17 +20,17 @@ class IDVector
         using const_iterator = typename std::vector<T>::const_iterator;
 
     public:
-        IDVector() : counterID{ 0 } {}
+        IDVector( ) : counterID{ 0 } {}
 
         template<typename... Args>
-        T& emplaceBack(Args&&... args)
+        T& emplaceBack( Args&&... args )
         {
             T& returnValue = m_container.emplace_back(counterID, std::forward<Args>(args)...);
             counterID ++;
             return returnValue;
         }
 
-        void reserve(int value)
+        void reserve( int value )
         {
             m_container.reserve(value);
         }
@@ -47,17 +47,17 @@ class IDVector
             }
         }
 
-        std::size_t size()
+        std::size_t size( )
         {
             return m_container.size();
         }
 
-        T& operator[](std::size_t index)
+        T& operator[]( std::size_t index )
         {
             return m_container[index];
         }
 
-        int findIndexById(int id)
+        int findIndexById( int id )
         {
             for(std::size_t i = 0; i < m_container.size(); ++i)
             {
@@ -69,7 +69,7 @@ class IDVector
             return -1;
         }
 
-        T& getById(int id)
+        T& getById( int id )
         {
             int index = findIndexById(id);
             if(index != -1)
@@ -79,12 +79,12 @@ class IDVector
             throw std::out_of_range("ELEMENT WITH ID NOT FOUND");
         }
 
-        void clear()
+        void clear( )
         {
             m_container.clear();
         }
 
-        iterator erase(iterator pos)
+        iterator erase( iterator pos )
         {
             return m_container.erase(pos);
         }
@@ -92,27 +92,27 @@ class IDVector
 
 
         // ranged for loops
-        iterator begin()
+        iterator begin( )
         {
             return m_container.begin();
         }
-        iterator end() {
+        iterator end( ) {
             return m_container.end();
         }
 
-        const_iterator begin() const {
+        const_iterator begin( ) const {
             return m_container.begin();
         }
 
-        const_iterator end() const {
+        const_iterator end( ) const {
             return m_container.end();
         }
 
-        const_iterator cbegin() const {
+        const_iterator cbegin( ) const {
             return m_container.cbegin();
         }
 
-        const_iterator cend() const {
+        const_iterator cend( ) const {
             return m_container.cend();
         }
 

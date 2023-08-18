@@ -9,7 +9,6 @@
 #include <SFML/Graphics.hpp>
 #include <cstddef>
 #include <mutex>
-#include <thread>
 #include <vector>
 #include <list>
 #include <iostream>
@@ -19,10 +18,13 @@
 #include "SFML/System/Vector2.hpp"
 #include "Time.h"
 #include "Object.h"
-#include "Grid.h"
 #include "InputHandler.h"
 #include "Stick.h"
 #include "StickMaker.h"
+#include "Math.h"
+#include "BuildController.h"
+
+using namespace mth;
 
 class Simulation
 {
@@ -53,29 +55,29 @@ class Simulation
         sf::Clock m_deltaTimeClock;
         float MULT  = 60;
 
-        std::thread m_updateThread;
 
         // MOUSE
         sf::Vector2f m_mousePosView;
-        sf::Vector2f m_mouseOldPos;
         sf::Vector2f m_mouseVelocity;
-        float m_mouseColRad = 15;
-        bool m_mouseColActive = false;
-        sf::CircleShape m_mouseColShape;
-
-        float m_mouseColMaxRad = 300;
-        float m_mouseColMinRad = 1;
 
 
-        bool m_isKeyHeld = false;
-        bool m_isMouseHeld = false;
-        bool m_buildKeyHeld = false;
+        // float m_mouseColRad = 15;
+        // bool m_mouseColActive = false;
+        // sf::CircleShape m_mouseColShape;
+
+        // float m_mouseColMaxRad = 300;
+        // float m_mouseColMinRad = 1;
+
+
+        // bool m_isKeyHeld = false;
+        // bool m_isMouseHeld = false;
+        // bool m_buildKeyHeld = false;
 
         bool m_gravityActive = true;
         bool m_paused = false;
 
-        bool m_buildModeActive = false;
-        bool m_newBallPin = false;
+        // bool m_buildModeActive = false;
+        // bool m_newBallPin = false;
 
         const int MAXBALLS = 1000;
 
@@ -87,6 +89,7 @@ class Simulation
         IDVector<Stick> m_sticks;
 
         Builder::StickMaker m_stickMaker;
+        Builder::BuildController m_buildController;
 
 
         bool m_demospawnerDone = false;
@@ -100,8 +103,6 @@ class Simulation
 
     private:
         void initText( );
-        float calcDistance( sf::Vector2f pos1, sf::Vector2f pos2 );
-
 
         void updateObjects( float subDeltaTime );
         void updateSticks( );
@@ -120,21 +121,20 @@ class Simulation
         void ballGrabbedMovement( );
 
         bool mouseHoveringBall( );
-        bool mouseHoveringBall( int& deleteID );
+        bool mouseHoveringBall( int& ID );
 
-        void calcMouseVelocity( );
         void setDeltaTime( );
 
         sf::Color getRainbowColors( float time );
 
-        void nonBuildModeMouseControls();
-        void buildModeMouseControls();
+        // void nonBuildModeMouseControls( );
+        // void buildModeMouseControls( );
 
     public:
 
     public:
-        Simulation();
-        ~Simulation();
+        Simulation( );
+        ~Simulation( );
 
         void initSticks( );
 
@@ -156,7 +156,6 @@ class Simulation
         void spawnStick( );
         void joinToStick( );
 
-        void joinUpdateThread( );
         void changeMouseRadius( float change );
 
         const void setWindow( sf::RenderWindow& window );

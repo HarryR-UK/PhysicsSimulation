@@ -1,19 +1,19 @@
 #include "../include/Time.h"
 
 
-void Time::initDeltaTime()
+void Time::initDeltaTime( )
 {
     Time::deltaTime = Time::clock.restart().asSeconds() * Time::MULTIPLIER;
 }
 
-void Time::updateFPS()
+void Time::updateFPS( )
 {
     fpsTime = fpsClock.getElapsedTime();
     fps = 1.f / fpsTime.asSeconds();
     fpsClock.restart().asSeconds();
 }
 
-float& Time::getFps()
+float& Time::getFps( )
 {
     return fps;
 }

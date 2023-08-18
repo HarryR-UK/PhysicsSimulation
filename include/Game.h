@@ -1,7 +1,7 @@
 #include "SFML/Window/ContextSettings.hpp"
-#include "Simulation.h"
 #ifndef GAME_H
 #pragma once
+#include "Simulation.h"
 
 #include <iostream>
 #include <vector>
@@ -26,11 +26,6 @@ class Game
         int m_screenWidth;
         int m_screenHeight;
 
-        void initVariables();
-        void initWindow();
-        void initFont();
-        void initText();
-
         bool m_isKeyHeld = false;
         bool m_isFullScreen = false;
 
@@ -44,30 +39,41 @@ class Game
 
         Simulation m_sim;
 
+    private:
+        void initVariables( );
+        void initWindow( );
+        void initFont( );
+        void initText( );
+
+
         
 
     public:
-        Game();
-        virtual ~Game();
-
-        void startGLoop();
-
-        void update();
-        void updateMousePos();
-
-        void pollEvents();
-        void getInput();
-
-        void render();
-
-
-        const bool isRunning() const;
-
         const int WINDOW_WIDTH;
         const int WINDOW_HEIGHT;
 
+    public:
+
+        Game( );
+        virtual ~Game( );
+
+        void startGLoop( );
+
+        void update( );
+        void updateMousePos( );
+
+        void pollEvents( );
+        void getInput( );
+
+        void render( );
+
+
+        const bool isRunning( ) const;
+
+
+
         // Accessors
-        sf::RenderWindow* getWindow();
+        sf::RenderWindow* getWindow( );
 
 
 };
