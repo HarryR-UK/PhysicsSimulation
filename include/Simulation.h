@@ -69,15 +69,15 @@ class Simulation
         // float m_mouseColMinRad = 1;
 
 
-        // bool m_isKeyHeld = false;
-        // bool m_isMouseHeld = false;
+        bool m_isKeyHeld = false;
+        bool m_isMouseHeld = false;
         // bool m_buildKeyHeld = false;
 
         bool m_gravityActive = true;
         bool m_paused = false;
 
         // bool m_buildModeActive = false;
-        // bool m_newBallPin = false;
+        bool m_newBallPin = false;
 
         const int MAXBALLS = 1000;
 

@@ -11,23 +11,18 @@ Simulation::Simulation( )
 
     m_buildController.setIsPaused(m_paused);
     m_buildController.setIsGravity(m_gravityActive);
+    m_buildController.setIsNewBallPin(m_newBallPin);
 
     m_objects.reserve(MAXBALLS);
     initText();
+    /*
     m_mouseColShape.setRadius(m_mouseColRad);
     m_mouseColShape.setPointCount(20);
     m_mouseColShape.setFillColor(sf::Color::Transparent);
     m_mouseColShape.setOutlineThickness(1);
     m_mouseColShape.setOutlineColor(sf::Color::Red);
-
-    /*
-    for(int i = 0; i < 122; ++i)
-    {
-        Object& obj = addNewObject({-100,-100}, 1);
-    }
-     * REMOVE LATER 
-     * Weird annoying gltch that makes the balls float until there are 122 balls 
     */
+
     
 }
 
@@ -194,9 +189,6 @@ void Simulation::buildModeMouseControls()
         m_buildKeyHeld = false;
     }
 
-    // if key enter pressed, check the size of the vector in the stickmaker vector, to check it is more than one (otherwise cannot make stick)
-    // // if only one then just spawn it as a normal ball
-    // also if somethiong line the delete key pressed then clear the vector in the stickMaker
 
 
 }
@@ -293,7 +285,7 @@ void Simulation::makeNewStick()
     newStickShape.setPointCount(Simulation::s_ballPointCount);
     newStickShape.setOutlineThickness(1);
     newStickShape.setOutlineColor(sf::Color::White);
-    newStickShape.setRadius(m_mouseColRad);
+    newStickShape.setRadius(m_buildController.mouseCollider.colliderRadius);
     newStickShape.setOrigin(newStickShape.getRadius(), newStickShape.getRadius());
     newStickShape.setFillColor(getRainbowColors(getTime()));
     newStickShape.setPosition(m_mousePosView);

@@ -9,7 +9,7 @@
 namespace Builder {
 
     struct MouseCollider {
-        float mouseColRadius = 15;
+        float colliderRadius = 15;
         bool isColliderActive = false;
         sf::CircleShape colliderShape;
 
@@ -41,12 +41,16 @@ namespace Builder {
         public:
 
         public:
-            void getInput( ); 
             MouseCollider mouseCollider;
+            void getInput( ); 
+
+            bool leftClick( );
+            bool rightClick( );
 
             void setIsPaused(bool& paused);
             void setIsGravity(bool& gravity);
             void setIsNewBallPin(bool& ballPin);
+            const bool getIsBuildMode() const;
 
     };
 
