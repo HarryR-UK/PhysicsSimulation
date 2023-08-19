@@ -90,7 +90,7 @@ void Simulation::updateText()
 void Simulation::nonBuildModeMouseControls()
 {
 
-    if(InputHandler::isLeftMouseClicked())
+    if(handler::InputHandler::isLeftMouseClicked())
     {
         if(mouseHoveringBall())
             m_grabbingBall = true;
@@ -119,7 +119,7 @@ void Simulation::nonBuildModeMouseControls()
         m_grabbingBall = false;
     }
 
-    if(InputHandler::isRightMouseClicked())
+    if(handler::InputHandler::isRightMouseClicked())
         m_mouseColActive = true;
     else
         m_mouseColActive = false;
@@ -128,17 +128,17 @@ void Simulation::nonBuildModeMouseControls()
 
 void Simulation::buildModeMouseControls()
 {
-    if(InputHandler::isLeftMouseClicked())
+    if(handler::InputHandler::isLeftMouseClicked())
     {
             if(m_spawnClock.getElapsedTime().asSeconds() > m_spawnNewBallDelay)
             {
                 Object& obj = addNewObject(m_mousePosView, m_mouseColRad, m_newBallPin);
-                obj.color = getRainbowColors(getTime());
+                obj.color = handler::ColorHandler::getRainbowColors(getTime());
                 m_spawnClock.restart();
             }
     }
 
-    if(InputHandler::isRightMouseClicked())
+    if(handler::InputHandler::isRightMouseClicked())
     {
         if(!m_isMouseHeld)
         {
@@ -155,7 +155,7 @@ void Simulation::buildModeMouseControls()
         m_isMouseHeld = false;
     }
 
-    if(InputHandler::isSClicked())
+    if(handler::InputHandler::isSClicked())
     {
         if(m_spawnClock.getElapsedTime().asSeconds() > m_spawnNewBluePrintDelay)
         {
@@ -164,7 +164,7 @@ void Simulation::buildModeMouseControls()
         }
     }
 
-    if(InputHandler::isAClicked() && !m_stickMaker.finishedStick)
+    if(handler::InputHandler::isAClicked() && !m_stickMaker.finishedStick)
     {
         if(!m_buildKeyHeld)
         {
@@ -172,7 +172,7 @@ void Simulation::buildModeMouseControls()
             spawnStick();
         }
     }
-    else if(InputHandler::isWClicked() && m_stickMaker.finishedStick)
+    else if(handler::InputHandler::isWClicked() && m_stickMaker.finishedStick)
     {
         if(!m_buildKeyHeld)
         {
@@ -282,7 +282,7 @@ void Simulation::makeNewStick()
     newStickShape.setOutlineColor(sf::Color::White);
     newStickShape.setRadius(m_mouseColRad);
     newStickShape.setOrigin(newStickShape.getRadius(), newStickShape.getRadius());
-    newStickShape.setFillColor(getRainbowColors(getTime()));
+    newStickShape.setFillColor(handler::ColorHandler::getRainbowColors(getTime()));
     newStickShape.setPosition(m_mousePosView);
     Builder::BluePrintStick newStickBluePrint;
     newStickBluePrint.shape = newStickShape;
@@ -322,7 +322,7 @@ void Simulation::getInput()
     else if(m_objects.size() < MAXBALLS)
         buildModeMouseControls();
 
-    if(InputHandler::isCClicked())
+    if(handler::InputHandler::isCClicked())
     {
         if(!m_isKeyHeld)
         {
@@ -333,7 +333,7 @@ void Simulation::getInput()
         }
 
     }
-    else if(InputHandler::isSpaceClicked())
+    else if(handler::InputHandler::isSpaceClicked())
     {
         if(!m_isKeyHeld)
         {
@@ -343,7 +343,7 @@ void Simulation::getInput()
             m_paused = !m_paused;
         }
     }
-    else if(InputHandler::isGClicked())
+    else if(handler::InputHandler::isGClicked())
     {
         if(!m_isKeyHeld)
         {
@@ -351,7 +351,7 @@ void Simulation::getInput()
             m_gravityActive = !m_gravityActive;
         }
     }
-    else if(InputHandler::isQClicked())
+    else if(handler::InputHandler::isQClicked())
     {
         if(!m_isKeyHeld)
         {
@@ -371,7 +371,7 @@ void Simulation::getInput()
 
         }
     }
-    else if(InputHandler::isEClicked())
+    else if(handler::InputHandler::isEClicked())
     {
         if(!m_isKeyHeld)
         {
@@ -448,7 +448,6 @@ void Simulation::simulate( )
                     if(m_gravityActive)
                         applyGravityToObjects();
                     updateObjects( getSubDeltaTime() );
-                    demoSpawner();
 
                 }
                 updateSticks();
@@ -609,33 +608,16 @@ void Simulation::ballGrabbedMovement( )
     }
 }
 
-sf::Color Simulation::getRainbowColors( float time )
-{
-    float red = sin(time);
-    float green = sin(time + 0.3f * 2);
-    float blue = sin(time + 0.6f * 2.0);
-
-
-    return sf::Color( 
-        static_cast<unsigned>(red * red * 255),
-        static_cast<unsigned>(green * green * 255),
-        static_cast<unsigned>(blue * blue * 255)
-            );
-}
-
 void Simulation::demoSpawner( )
 {
-    if(m_demospawnerDone)
-        return;
     
     sf::Vector2f spawnPos = {m_window->getSize().x * 0.5f, m_window->getSize().y * 0.25f};
-    int maxBalls = 300;
     float spawnDelay = 0.05f;
     float spawnSpeed = 40;
     int minRad = 6;
     int maxRad = 16;
 
-    if(m_objects.size() < maxBalls && m_clock.getElapsedTime().asSeconds() >= spawnDelay)
+    if(m_clock.getElapsedTime().asSeconds() >= spawnDelay)
     {
         m_clock.restart().asSeconds();
         Object& ob = addNewObject(spawnPos, (rand() % maxRad) + minRad);
@@ -645,14 +627,10 @@ void Simulation::demoSpawner( )
         float angle =  time * Math::PI * 0.05;
 
         ob.addVelocity( spawnSpeed * sf::Vector2f(cos(angle), sin(angle)), getSubDeltaTime());
-        ob.color = getRainbowColors(time);
+        ob.color = handler::ColorHandler::getRainbowColors(time);
 
     }
 
-    if(m_objects.size() == maxBalls)
-    {
-        m_demospawnerDone = true;
-    }
 
 
 }

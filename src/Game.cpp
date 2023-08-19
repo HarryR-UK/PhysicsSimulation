@@ -96,7 +96,7 @@ void Game::getInput()
 
     if(m_window->hasFocus())
     {
-        if(InputHandler::isFClicked())
+        if(handler::InputHandler::isFClicked())
         {
             if(!m_isKeyHeld)
             {

@@ -24,6 +24,7 @@
 #include "Stick.h"
 #include "StickMaker.h"
 #include "Math.h"
+#include "ColorHandler.h"
 
 using namespace mth;
 
@@ -40,8 +41,6 @@ class Simulation
 
         sf::Text m_debugText;
         sf::Font m_font;
-
-        int m_ballRad = BALL_RADIUS;
 
         const sf::Vector2f GRAVITY = { 0.f, 20.f };
 
@@ -91,8 +90,8 @@ class Simulation
 
         Builder::StickMaker m_stickMaker;
 
+        bool m_isDemoSpawnerActive = false;
 
-        bool m_demospawnerDone = false;
 
         bool m_gotFirstBallToJoin = false;
         int m_obj1LinkID;
@@ -103,8 +102,6 @@ class Simulation
 
     private:
         void initText( );
-        float calcDistance( sf::Vector2f pos1, sf::Vector2f pos2 );
-
 
         void updateObjects( float subDeltaTime );
         void updateSticks( );
@@ -127,8 +124,6 @@ class Simulation
 
         void calcMouseVelocity( );
         void setDeltaTime( );
-
-        sf::Color getRainbowColors( float time );
 
         void nonBuildModeMouseControls();
         void buildModeMouseControls();

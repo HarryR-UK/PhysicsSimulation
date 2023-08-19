@@ -1,6 +1,6 @@
 #include "../include/InputHandler.h"
 
-
+using namespace handler;
 bool InputHandler::isLeftMouseClicked()
 {
     return sf::Mouse::isButtonPressed(sf::Mouse::Left);
