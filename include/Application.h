@@ -1,17 +1,18 @@
-#include "SFML/Window/ContextSettings.hpp"
-#ifndef GAME_H
+#ifndef APPLICATION_H
+#define APPLICATION_H
 #pragma once
 #include "Simulation.h"
 
 #include <iostream>
 #include <vector>
 
+#include "SFML/Window/ContextSettings.hpp"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
 
-class Game
+class Application
 {
     private:
         sf::RenderWindow* m_window;
@@ -37,7 +38,7 @@ class Game
         sf::Vector2i m_mousePosScreen;
         sf::Vector2i m_mousePosWindow;
 
-        Simulation m_sim;
+        pe::Simulation m_sim;
 
     private:
         void initVariables( );
@@ -55,10 +56,10 @@ class Game
 
     public:
 
-        Game( );
-        virtual ~Game( );
+        Application( );
+        virtual ~Application( );
 
-        void startGLoop( );
+        void run( );
 
         void update( );
         void updateMousePos( );

@@ -27,139 +27,141 @@
 #include "ColorHandler.h"
 
 using namespace mth;
+namespace pe {
 
-class Simulation
-{
-    private:
-        sf::RenderWindow* m_window;
-        
-
-        int m_subStepNumber;
-        float m_deltaTime;
-        float m_subDeltaTime;
-        float m_time;
-
-        sf::Text m_debugText;
-        sf::Font m_font;
-
-        const sf::Vector2f GRAVITY = { 0.f, 20.f };
-
-        sf::Clock m_clock;
-        sf::Clock m_simUpdateClock;
+    class Simulation
+    {
+        private:
+            sf::RenderWindow* m_window;
 
 
-        
-        bool m_grabbingBall = true;
+            int m_subStepNumber;
+            float m_deltaTime;
+            float m_subDeltaTime;
+            float m_time;
+
+            sf::Text m_debugText;
+            sf::Font m_font;
+
+            const sf::Vector2f GRAVITY = { 0.f, 20.f };
+
+            sf::Clock m_clock;
+            sf::Clock m_simUpdateClock;
 
 
-        sf::Clock m_deltaTimeClock;
-        float MULT  = 60;
 
-        std::thread m_updateThread;
-
-        // MOUSE
-        sf::Vector2f m_mousePosView;
-        sf::Vector2f m_mouseOldPos;
-        sf::Vector2f m_mouseVelocity;
-        float m_mouseColRad = 15;
-        bool m_mouseColActive = false;
-        sf::CircleShape m_mouseColShape;
-
-        float m_mouseColMaxRad = 300;
-        float m_mouseColMinRad = 1;
+            bool m_grabbingBall = true;
 
 
-        bool m_isKeyHeld = false;
-        bool m_isMouseHeld = false;
-        bool m_buildKeyHeld = false;
+            sf::Clock m_deltaTimeClock;
+            float MULT  = 60;
 
-        bool m_gravityActive = true;
-        bool m_paused = false;
+            std::thread m_updateThread;
 
-        bool m_buildModeActive = false;
-        bool m_newBallPin = false;
+            // MOUSE
+            sf::Vector2f m_mousePosView;
+            sf::Vector2f m_mouseOldPos;
+            sf::Vector2f m_mouseVelocity;
+            float m_mouseColRad = 15;
+            bool m_mouseColActive = false;
+            sf::CircleShape m_mouseColShape;
 
-        const int MAXBALLS = 1000;
-
-        sf::Clock m_spawnClock;
-        float m_spawnNewBallDelay = 0.15;
-        float m_spawnNewBluePrintDelay = 0.4f;
-
-        IDVector<Object> m_objects;
-        IDVector<Stick> m_sticks;
-
-        Builder::StickMaker m_stickMaker;
-
-        bool m_gotFirstBallToJoin = false;
-        int m_obj1LinkID;
-        int m_obj2LinkID;
-
-        static const int s_ballPointCount = 30;
+            float m_mouseColMaxRad = 300;
+            float m_mouseColMinRad = 1;
 
 
-    private:
-        void initText( );
+            bool m_isKeyHeld = false;
+            bool m_isMouseHeld = false;
+            bool m_buildKeyHeld = false;
 
-        void updateObjects( float subDeltaTime );
-        void updateSticks( );
-        void updateText( );
-        void updateMousePos( );
+            bool m_gravityActive = true;
+            bool m_paused = false;
 
-        void applyGravityToObjects( );
+            bool m_buildModeActive = false;
+            bool m_newBallPin = false;
 
-        void checkConstraints( );
+            const int MAXBALLS = 1000;
 
-        void checkCollisions( );
-        void mouseCollisionsBall( );
-        void getInput( );
+            sf::Clock m_spawnClock;
+            float m_spawnNewBallDelay = 0.15;
+            float m_spawnNewBluePrintDelay = 0.4f;
+
+            IDVector<Object> m_objects;
+            IDVector<Stick> m_sticks;
+
+            Builder::StickMaker m_stickMaker;
+
+            bool m_gotFirstBallToJoin = false;
+            int m_obj1LinkID;
+            int m_obj2LinkID;
+
+            static const int s_ballPointCount = 30;
 
 
-        void ballGrabbedMovement( );
+        private:
+            void initText( );
 
-        bool mouseHoveringBall( );
-        bool mouseHoveringBall( int& deleteID );
+            void updateObjects( float subDeltaTime );
+            void updateSticks( );
+            void updateText( );
+            void updateMousePos( );
 
-        void calcMouseVelocity( );
-        void setDeltaTime( );
+            void applyGravityToObjects( );
 
-        void nonBuildModeMouseControls();
-        void buildModeMouseControls();
+            void checkConstraints( );
 
-    public:
+            void checkCollisions( );
+            void mouseCollisionsBall( );
+            void getInput( );
 
-    public:
-        Simulation();
-        ~Simulation();
 
-        void initSticks( );
+            void ballGrabbedMovement( );
 
-        void render( sf::RenderTarget& target );
-        void renderSticks( sf::RenderTarget& target );
-        void renderUI( sf::RenderTarget& target );
-        void renderBluePrints( sf::RenderTarget& target );
+            bool mouseHoveringBall( );
+            bool mouseHoveringBall( int& deleteID );
 
-        void deleteBall( int& delID );
+            void calcMouseVelocity( );
+            void setDeltaTime( );
 
-        void startSim( );
-        void simulate( );
+            void nonBuildModeMouseControls();
+            void buildModeMouseControls();
 
-        void demoSpawner( );
+        public:
 
-        Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
-        Stick& addNewStick( int id1, int id2, float length );
-        void makeStickChain( );
-        void spawnStick( );
-        void createJoint( );
+        public:
+            Simulation();
+            ~Simulation();
 
-        void changeMouseRadius( float change );
+            void initSticks( );
 
-        const void setWindow( sf::RenderWindow& window );
-        const void setSubSteps( int substeps );
+            void render( sf::RenderTarget& target );
+            void renderSticks( sf::RenderTarget& target );
+            void renderUI( sf::RenderTarget& target );
+            void renderBluePrints( sf::RenderTarget& target );
 
-        const float getSubDeltaTime( ) const;
-        const int getSubSteps( ) const;
-        const float getTime( ) const;
+            void deleteBall( int& delID );
 
+            void startSim( );
+            void simulate( );
+
+            void demoSpawner( );
+
+            Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
+            Stick& addNewStick( int id1, int id2, float length );
+            void makeStickChain( );
+            void spawnStick( );
+            void createJoint( );
+
+            void changeMouseRadius( float change );
+
+            const void setWindow( sf::RenderWindow& window );
+            const void setSubSteps( int substeps );
+
+            const float getSubDeltaTime( ) const;
+            const int getSubSteps( ) const;
+            const float getTime( ) const;
+
+    };
 
 };
 

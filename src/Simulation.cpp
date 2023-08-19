@@ -1,6 +1,6 @@
 #include "../include/Simulation.h"
-#include <cstddef>
 
+using namespace pe;
 
 Simulation::~Simulation( )
 {

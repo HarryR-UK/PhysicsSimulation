@@ -1,19 +1,19 @@
-#include "../include/Game.h"
+#include "../include/Application.h"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
 
-const bool Game::isRunning() const
+const bool Application::isRunning() const
 {
     return m_window->isOpen();
 }
 
-Game::~Game()
+Application::~Application()
 {
     delete m_window;
 }
 
 
-Game::Game()
+Application::Application()
     : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2),
     WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
     /*
@@ -33,7 +33,7 @@ Game::Game()
 }
 
 
-void Game::initVariables()
+void Application::initVariables()
 {
     m_window = nullptr;
     
@@ -44,7 +44,7 @@ void Game::initVariables()
 
 }
 
-void Game::initWindow()
+void Application::initWindow()
 {
     m_videoMode.height = WINDOW_HEIGHT;
     m_videoMode.width = WINDOW_WIDTH;
@@ -55,7 +55,7 @@ void Game::initWindow()
     m_window->setFramerateLimit(244);
 }
 
-void Game::initFont()
+void Application::initFont()
 {
     if(!m_mainFont.loadFromFile("../res/fonts/open-sans/OpenSans-Regular.ttf"))
     {
@@ -63,13 +63,13 @@ void Game::initFont()
     }
 }
 
-void Game::initText()
+void Application::initText()
 {
 
 }
 
 
-void Game::pollEvents()
+void Application::pollEvents()
 {
     while(m_window->pollEvent(m_event))
     {
@@ -86,7 +86,7 @@ void Game::pollEvents()
 }
 
 
-void Game::toggleFullscreen( )
+void Application::toggleFullscreen( )
 {
     // FULLSCREEN CONTROLS
 
@@ -120,14 +120,14 @@ void Game::toggleFullscreen( )
 }
 
 
-void Game::getInput()
+void Application::getInput()
 {
 
 
     toggleFullscreen();
 }
 
-void Game::updateMousePos()
+void Application::updateMousePos()
 {
     m_mousePosScreen = sf::Mouse::getPosition();
     m_mousePosWindow = sf::Mouse::getPosition(*m_window);
@@ -136,7 +136,7 @@ void Game::updateMousePos()
 
 }
 
-void Game::update()
+void Application::update()
 {
     pollEvents();
     getInput();
@@ -146,7 +146,7 @@ void Game::update()
 }
 
 
-void Game::render()
+void Application::render()
 {
     m_window->clear();
 
@@ -156,9 +156,8 @@ void Game::render()
     m_window->display();
 }
 
-void Game::startGLoop()
+void Application::run()
 {
-    // m_sim.startSim();
     m_sim.initSticks();
     while(this->isRunning())
     {
@@ -170,7 +169,6 @@ void Game::startGLoop()
         this->render();
 
     }
-    // m_sim.joinUpdateThread();
 }
 
 // TODO: change to set variables for the window width and height so that the thread which runns the simulation
