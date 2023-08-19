@@ -4,22 +4,10 @@
 
 #include "SFML/Graphics.hpp"
 #include "InputHandler.h"
+#include "Simulation.h"
 
 
 namespace Builder {
-
-    struct MouseCollider {
-        float colliderRadius = 15;
-        bool isColliderActive = false;
-        sf::CircleShape colliderShape;
-
-        // constaints
-        float colliderMinRad = 1;
-        float colliderMaxRad = 300;
-        MouseCollider();
-
-
-    };
 
     class BuildController
     {
@@ -29,28 +17,22 @@ namespace Builder {
             bool m_isBuildKeyHeld = false;
             bool m_isBuildActive = false;
 
-            bool* m_isPaused = nullptr;
-            bool* m_isGravityActive = nullptr;
-            bool* m_isNewBallPinned = nullptr;
+            Simulation& m_sim;
+
 
 
         private:
+
+        public:
+
+        public:
+            BuildController(Simulation& sim);
             void buildModeControls( );
             void nonBuildModeControls( );
+            void getInput( );
 
-        public:
-
-        public:
-            MouseCollider mouseCollider;
-            void getInput( ); 
-
-            bool leftClick( );
-            bool rightClick( );
-
-            void setIsPaused(bool& paused);
-            void setIsGravity(bool& gravity);
-            void setIsNewBallPin(bool& ballPin);
             const bool getIsBuildMode() const;
+            const void setIsBuildMode(bool& value);
 
     };
 

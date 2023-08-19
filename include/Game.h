@@ -1,3 +1,4 @@
+#include "BuildController.h"
 #include "SFML/Window/ContextSettings.hpp"
 #ifndef GAME_H
 #pragma once
@@ -36,6 +37,8 @@ class Game
         // Mouse Pos
         sf::Vector2i m_mousePosScreen;
         sf::Vector2i m_mousePosWindow;
+
+        Builder::BuildController m_buildController;
 
         Simulation m_sim;
 

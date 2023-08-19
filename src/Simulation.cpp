@@ -9,19 +9,9 @@ Simulation::~Simulation( )
 Simulation::Simulation( )
 {
 
-    m_buildController.setIsPaused(m_paused);
-    m_buildController.setIsGravity(m_gravityActive);
-    m_buildController.setIsNewBallPin(m_newBallPin);
 
     m_objects.reserve(MAXBALLS);
     initText();
-    /*
-    m_mouseColShape.setRadius(m_mouseColRad);
-    m_mouseColShape.setPointCount(20);
-    m_mouseColShape.setFillColor(sf::Color::Transparent);
-    m_mouseColShape.setOutlineThickness(1);
-    m_mouseColShape.setOutlineColor(sf::Color::Red);
-    */
 
     
 }
@@ -85,7 +75,7 @@ void Simulation::updateText()
         << "SIM TIME: " << m_simUpdateClock.restart().asMilliseconds() << "ms" << '\n'
         << "BALLS: " << m_objects.size() << '\n'
         << "GRAVITY: " << m_gravityActive << '\n'
-        << "BUILD: " << m_buildModeActive << '\n';
+        << "BUILD: " << m_buildController.getIsBuildMode() << '\n';
         ;
     m_debugText.setString(ss.str());
 
@@ -321,72 +311,7 @@ void Simulation::deleteBall( int& delID )
 
 void Simulation::getInput()
 {
-        if(!m_buildModeActive)
-            nonBuildModeMouseControls();
-        else if(m_objects.size() < MAXBALLS)
-            buildModeMouseControls();
 
-    if(InputHandler::isCClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            m_sticks.clear();
-            m_stickMaker.bluePrintSticks.clear();
-            m_objects.clear();
-        }
-
-    }
-    else if(InputHandler::isSpaceClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            for(auto& obj : m_objects)
-                obj.setVelocity({0,0}, getSubDeltaTime());
-            m_paused = !m_paused;
-        }
-    }
-    else if(InputHandler::isGClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            m_gravityActive = !m_gravityActive;
-        }
-    }
-    else if(InputHandler::isQClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            if(m_grabbingBall)
-            {
-                for(auto &obj : m_objects)
-                {
-                    if(obj.isGrabbed)
-                        obj.togglePinned();
-
-                }
-            }
-            else if(m_buildModeActive){
-                m_newBallPin = !m_newBallPin;
-            }
-
-        }
-    }
-    else if(InputHandler::isEClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            m_buildModeActive = !m_buildModeActive;
-
-        }
-    }
-    else{
-        m_isKeyHeld = false;
-    }
 
 }
 
@@ -562,6 +487,13 @@ void Simulation::updateSticks()
 }
 
 
+void Simulation::clearVectors( )
+{
+    
+    m_sticks.clear();
+    m_stickMaker.bluePrintSticks.clear();
+    m_objects.clear();
+}
 
 bool Simulation::mouseHoveringBall()
 {

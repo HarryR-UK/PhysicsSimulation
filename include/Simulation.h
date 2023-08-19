@@ -22,7 +22,7 @@
 #include "Stick.h"
 #include "StickMaker.h"
 #include "Math.h"
-#include "BuildController.h"
+#include "MouseCollider.h"
 
 using namespace mth;
 
@@ -89,7 +89,7 @@ class Simulation
         IDVector<Stick> m_sticks;
 
         Builder::StickMaker m_stickMaker;
-        Builder::BuildController m_buildController;
+        Builder::MouseCollider m_mouseCollider;
 
 
         bool m_demospawnerDone = false;
@@ -144,6 +144,7 @@ class Simulation
         void renderBluePrints( sf::RenderTarget& target );
 
         void deleteBall( int& delID );
+        void clearVectors( );
 
         void startSim( );
         void simulate( );
