@@ -16,7 +16,6 @@ Game::~Game()
 Game::Game()
     : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2),
     WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
-    , m_buildController(m_sim)
     /*
     : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2), 
     WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
@@ -90,73 +89,7 @@ void Game::pollEvents()
 void Game::getInput()
 {
 
-    m_buildController.getInput();
-    if(!m_buildController.getIsBuildMode())
-        m_buildController.nonBuildModeControls();
-    else if(m_objects.size() < MAXBALLS)
-        m_buildController.buildModeControls();
 
-    if(InputHandler::isCClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            m_sticks.clear();
-            m_stickMaker.bluePrintSticks.clear();
-            m_objects.clear();
-        }
-
-    }
-    else if(InputHandler::isSpaceClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            for(auto& obj : m_objects)
-                obj.setVelocity({0,0}, getSubDeltaTime());
-            m_paused = !m_paused;
-        }
-    }
-    else if(InputHandler::isGClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            m_gravityActive = !m_gravityActive;
-        }
-    }
-    else if(InputHandler::isQClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            if(m_grabbingBall)
-            {
-                for(auto &obj : m_objects)
-                {
-                    if(obj.isGrabbed)
-                        obj.togglePinned();
-
-                }
-            }
-            else if(m_buildController.getIsBuildMode()){
-                m_newBallPin = !m_newBallPin;
-            }
-
-        }
-    }
-    else if(InputHandler::isEClicked())
-    {
-        if(!m_isKeyHeld)
-        {
-            m_isKeyHeld = true;
-            m_buildController.setIsBuildMode(!m_buildController.getIsBuildMode());
-
-        }
-    }
-    else{
-        m_isKeyHeld = false;
-    }
 
 
     // FULLSCREEN CONTROLS
