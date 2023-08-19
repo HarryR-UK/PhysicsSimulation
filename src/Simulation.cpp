@@ -159,7 +159,7 @@ void Simulation::buildModeMouseControls()
     {
         if(m_spawnClock.getElapsedTime().asSeconds() > m_spawnNewBluePrintDelay)
         {
-            makeNewStick();
+            makeStickChain();
             m_spawnClock.restart();
         }
     }
@@ -177,7 +177,7 @@ void Simulation::buildModeMouseControls()
         if(!m_buildKeyHeld)
         {
             m_buildKeyHeld = true;
-            joinToStick();
+            createJoint();
         }
     }
     else{
@@ -188,7 +188,7 @@ void Simulation::buildModeMouseControls()
 
 }
 
-void Simulation::joinToStick()
+void Simulation::createJoint()
 {
     if(!m_gotFirstBallToJoin)
     {
@@ -273,7 +273,7 @@ void Simulation::spawnStick( )
 }
 
 
-void Simulation::makeNewStick()
+void Simulation::makeStickChain()
 {
     m_stickMaker.finishedStick = false;
     sf::CircleShape newStickShape;

@@ -86,12 +86,8 @@ void Game::pollEvents()
 }
 
 
-void Game::getInput()
+void Game::toggleFullscreen( )
 {
-
-
-
-
     // FULLSCREEN CONTROLS
 
     if(m_window->hasFocus())
@@ -104,7 +100,7 @@ void Game::getInput()
 
                 m_videoMode.width = sf::VideoMode::getDesktopMode().width / 1.2;
                 m_videoMode.height = sf::VideoMode::getDesktopMode().height / 1.05;
-            
+
                 if(m_isFullScreen)
                 {
                     m_window->create(m_videoMode, "PHYSICS", sf::Style::Close, m_contextSettings);
@@ -120,6 +116,15 @@ void Game::getInput()
             m_isKeyHeld = false;
         }
     }
+
+}
+
+
+void Game::getInput()
+{
+
+
+    toggleFullscreen();
 }
 
 void Game::updateMousePos()

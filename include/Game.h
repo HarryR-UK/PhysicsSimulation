@@ -44,6 +44,7 @@ class Game
         void initWindow( );
         void initFont( );
         void initText( );
+        void toggleFullscreen( );
 
 
         

@@ -90,9 +90,6 @@ class Simulation
 
         Builder::StickMaker m_stickMaker;
 
-        bool m_isDemoSpawnerActive = false;
-
-
         bool m_gotFirstBallToJoin = false;
         int m_obj1LinkID;
         int m_obj2LinkID;
@@ -150,11 +147,10 @@ class Simulation
 
         Object& addNewObject( sf::Vector2f startPos, float r, bool pinned = false);
         Stick& addNewStick( int id1, int id2, float length );
-        void makeNewStick( );
+        void makeStickChain( );
         void spawnStick( );
-        void joinToStick( );
+        void createJoint( );
 
-        void joinUpdateThread( );
         void changeMouseRadius( float change );
 
         const void setWindow( sf::RenderWindow& window );
