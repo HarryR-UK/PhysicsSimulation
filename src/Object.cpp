@@ -25,7 +25,7 @@ void Object::update( float deltaTime )
 
 }
 
-void Object::setVelocity(sf::Vector2f vel, float deltaTime)
+void Object::setVelocity( sf::Vector2f vel, float deltaTime )
 {
     oldPos = currentPos - ( vel * deltaTime );
 }
@@ -45,7 +45,7 @@ void Object::accelerate( sf::Vector2f acc )
     acceleration += acc;
 }
 
-void Object::togglePinned()
+void Object::togglePinned( )
 {
     isPinned = !isPinned;
 }

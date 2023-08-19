@@ -1,11 +1,7 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
-#include "IDVector.h"
-#include <_types/_uint8_t.h>
 #pragma once
-#include "Global.h"
-#include "SFML/Graphics/CircleShape.hpp"
-#include "SFML/Graphics/RenderWindow.hpp"
+#include <_types/_uint8_t.h>
 #include <SFML/Graphics.hpp>
 #include <cstddef>
 #include <mutex>
@@ -14,15 +10,22 @@
 #include <list>
 #include <iostream>
 #include <cmath>
-#include "SFML/Graphics/Text.hpp"
 #include <sstream>
+
+#include "IDVector.h"
+#include "Global.h"
+#include "SFML/Graphics/CircleShape.hpp"
+#include "SFML/Graphics/RenderWindow.hpp"
+#include "SFML/Graphics/Text.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "Time.h"
 #include "Object.h"
-#include "Grid.h"
 #include "InputHandler.h"
 #include "Stick.h"
 #include "StickMaker.h"
+#include "Math.h"
+
+using namespace mth;
 
 class Simulation
 {

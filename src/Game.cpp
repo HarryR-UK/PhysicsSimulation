@@ -88,6 +88,12 @@ void Game::pollEvents()
 
 void Game::getInput()
 {
+
+
+
+
+    // FULLSCREEN CONTROLS
+
     if(m_window->hasFocus())
     {
         if(InputHandler::isFClicked())

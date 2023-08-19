@@ -8,7 +8,7 @@ Stick::Stick( int stickID, int id1, int id2, float length )
     this->length = length;
 }
 
-void Stick::update(Object &obj1, Object &obj2)
+void Stick::update( Object &obj1, Object &obj2 )
 {
     sf::Vector2f axis = obj2.currentPos - obj1.currentPos;
     float distance = sqrt(axis.x * axis.x + axis.y * axis.y);

@@ -2,30 +2,22 @@
 #include <cstddef>
 
 
-Simulation::~Simulation()
+Simulation::~Simulation( )
 {
 }
 
-Simulation::Simulation()
+Simulation::Simulation( )
 {
 
-
-    m_objects.reserve(MAXBALLS);
-    initText();
     m_mouseColShape.setRadius(m_mouseColRad);
     m_mouseColShape.setPointCount(20);
     m_mouseColShape.setFillColor(sf::Color::Transparent);
     m_mouseColShape.setOutlineThickness(1);
     m_mouseColShape.setOutlineColor(sf::Color::Red);
 
-    /*
-    for(int i = 0; i < 122; ++i)
-    {
-        Object& obj = addNewObject({-100,-100}, 1);
-    }
-     * REMOVE LATER 
-     * Weird annoying gltch that makes the balls float until there are 122 balls 
-    */
+    m_objects.reserve(MAXBALLS);
+    initText();
+
     
 }
 
@@ -192,9 +184,6 @@ void Simulation::buildModeMouseControls()
         m_buildKeyHeld = false;
     }
 
-    // if key enter pressed, check the size of the vector in the stickmaker vector, to check it is more than one (otherwise cannot make stick)
-    // // if only one then just spawn it as a normal ball
-    // also if somethiong line the delete key pressed then clear the vector in the stickMaker
 
 
 }
@@ -229,7 +218,7 @@ void Simulation::joinToStick()
             obj2.outlineColor = sf::Color::White;
 
             
-            Stick& s = addNewStick(m_obj1LinkID, m_obj2LinkID, calcDistance(obj1.currentPos, obj2.currentPos));
+            Stick& s = addNewStick(m_obj1LinkID, m_obj2LinkID, Math::getDistance(obj1.currentPos, obj2.currentPos));
             obj1.isSelected = false;
             obj1.outlineThic = 0;
 
@@ -269,31 +258,20 @@ void Simulation::spawnStick( )
             Object& obj1 = m_objects[initialSizeOfVector + j];
             Object& obj2 = m_objects[initialSizeOfVector + (j+1)];
 
-            float dist = calcDistance(obj1.currentPos, obj2.currentPos);
-            m_stickMaker.idHolder.emplace_back(obj1.ID, obj2.ID, dist);
+            float dist = Math::getDistance(obj1.currentPos, obj2.currentPos);
+            Stick& stick = addNewStick(obj1.ID, obj2.ID, dist);
 
         }
 
-
-        for(auto& i : m_stickMaker.idHolder)
-        {
-            Stick& stick = addNewStick(i.ID1, i.ID2, i.dist);
-        }
 
 
     }
 
 
-    m_stickMaker.idHolder.clear();
     m_stickMaker.bluePrintSticks.clear();
     m_stickMaker.finishedStick = true;
 }
 
-float Simulation::calcDistance( sf::Vector2f pos1, sf::Vector2f pos2 )
-{
-    sf::Vector2f axis = pos2 - pos1;
-    return sqrt(axis.x * axis.x + axis.y * axis.y);
-}
 
 void Simulation::makeNewStick()
 {
@@ -338,10 +316,11 @@ void Simulation::deleteBall( int& delID )
 
 void Simulation::getInput()
 {
-        if(!m_buildModeActive)
-            nonBuildModeMouseControls();
-        else if(m_objects.size() < MAXBALLS)
-            buildModeMouseControls();
+
+    if(!m_buildModeActive)
+        nonBuildModeMouseControls();
+    else if(m_objects.size() < MAXBALLS)
+        buildModeMouseControls();
 
     if(InputHandler::isCClicked())
     {
@@ -350,7 +329,6 @@ void Simulation::getInput()
             m_isKeyHeld = true;
             m_sticks.clear();
             m_stickMaker.bluePrintSticks.clear();
-            m_stickMaker.idHolder.clear();
             m_objects.clear();
         }
 
@@ -443,17 +421,7 @@ void Simulation::updateMousePos()
     m_mousePosView = m_window->mapPixelToCoords(sf::Mouse::getPosition(*m_window));
 }
 
-void Simulation::calcMouseVelocity()
-{
-    // useful so that when grabbing a ball, then letting go, depending on how you throw the mouse, depends on how the ball is thrown
-    m_mouseVelocity = m_mousePosView - m_mouseOldPos;
-    m_mouseOldPos = m_mousePosView;
-}
 
-void Simulation::startSim( )
-{
-    m_updateThread = std::thread(&Simulation::simulate, this);
-}
 
 void Simulation::simulate( )
 {
@@ -470,7 +438,8 @@ void Simulation::simulate( )
                 getInput();
             }
             updateMousePos();
-            calcMouseVelocity();
+            
+            m_mouseVelocity = Math::getMouseVelocity(m_mousePosView);
 
             for(int i{getSubSteps()}; i > 0; --i)
             {
@@ -589,10 +558,6 @@ void Simulation::updateSticks()
 }
 
 
-void Simulation::joinUpdateThread()
-{
-    m_updateThread.join();
-}
 
 bool Simulation::mouseHoveringBall()
 {
@@ -611,7 +576,7 @@ bool Simulation::mouseHoveringBall()
 
     return false;
 }
-bool Simulation::mouseHoveringBall( int& delteID )
+bool Simulation::mouseHoveringBall( int& ID )
 {
     for(auto &obj: m_objects)
     {
@@ -620,7 +585,7 @@ bool Simulation::mouseHoveringBall( int& delteID )
         
         if(dist < obj.radius && !m_grabbingBall)
         {
-            delteID = obj.ID;
+            ID = obj.ID;
             return true;
         }
     }
@@ -628,7 +593,7 @@ bool Simulation::mouseHoveringBall( int& delteID )
     return false;
 }
 
-void Simulation::ballGrabbedMovement()
+void Simulation::ballGrabbedMovement( )
 {
     for(auto &obj : m_objects)
     {
@@ -658,7 +623,7 @@ sf::Color Simulation::getRainbowColors( float time )
             );
 }
 
-void Simulation::demoSpawner()
+void Simulation::demoSpawner( )
 {
     if(m_demospawnerDone)
         return;
@@ -677,7 +642,7 @@ void Simulation::demoSpawner()
 
         float time = getTime();
         
-        float angle =  time * 3.1415936 * 0.05;
+        float angle =  time * Math::PI * 0.05;
 
         ob.addVelocity( spawnSpeed * sf::Vector2f(cos(angle), sin(angle)), getSubDeltaTime());
         ob.color = getRainbowColors(time);
@@ -692,7 +657,7 @@ void Simulation::demoSpawner()
 
 }
 
-void Simulation::checkConstraints()
+void Simulation::checkConstraints( )
 {
     for(auto &obj : m_objects)
     {
@@ -722,7 +687,7 @@ void Simulation::checkConstraints()
     }
 }
 
-void Simulation::checkCollisions()
+void Simulation::checkCollisions( )
 {
 
     for(std::size_t i = 0; i < m_objects.size(); ++i)
@@ -751,7 +716,7 @@ void Simulation::checkCollisions()
     mouseCollisionsBall();
 }
 
-void Simulation::mouseCollisionsBall()
+void Simulation::mouseCollisionsBall( )
 {
     if(m_mouseColActive)
     {
@@ -857,7 +822,7 @@ void Simulation::render( sf::RenderTarget &target )
     }
 }
 
-void Simulation::renderSticks(sf::RenderTarget &target)
+void Simulation::renderSticks( sf::RenderTarget &target )
 {
     for(auto &stick : m_sticks)
     {

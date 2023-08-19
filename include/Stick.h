@@ -12,10 +12,10 @@ struct Stick
 
     float length;
 
-    Stick(int stickID, int id1, int id2, float length);
+    Stick( int stickID, int id1, int id2, float length );
 
     // in simulation class, set object references based on the ID
-    void update(Object& obj1, Object& obj2);
+    void update( Object& obj1, Object& obj2 );
 };
 
 #endif //!STICK_H
