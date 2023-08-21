@@ -17,7 +17,6 @@ Simulation::Simulation( )
 
     m_objects.reserve(MAXBALLS);
     initText();
-
     
 }
 
@@ -33,6 +32,13 @@ const float Simulation::getSubDeltaTime( ) const
 {
     return m_deltaTime / static_cast<float>(m_subStepNumber);
 }
+
+const void Simulation::setConstraintDimensions( int w, int h)
+{
+    m_constraintWidth = w;
+    m_constraintHeight = h;
+}
+
 const int Simulation::getSubSteps( ) const
 {
     return m_subStepNumber;
@@ -41,6 +47,15 @@ const int Simulation::getSubSteps( ) const
 const float Simulation::getTime() const
 {
     return m_time;
+}
+const IDVector<Object>& Simulation::getObjects( )const
+{
+    return m_objects;
+}
+
+const IDVector<Stick>& Simulation::getSticks( )const
+{
+    return m_sticks;
 }
 
 Object& Simulation::addNewObject( sf::Vector2f startPos, float r, bool pinned )
@@ -130,12 +145,14 @@ void Simulation::buildModeMouseControls()
 {
     if(handler::InputHandler::isLeftMouseClicked())
     {
-            if(m_spawnClock.getElapsedTime().asSeconds() > m_spawnNewBallDelay)
+            if(m_spawnClock.getElapsedTime().asSeconds() > m_spawnNewBallDelay 
+                    && m_mousePosView.x < m_constraintWidth && m_mousePosView.y < m_constraintHeight - m_mouseColRad)
             {
                 Object& obj = addNewObject(m_mousePosView, m_mouseColRad, m_newBallPin);
                 obj.color = handler::ColorHandler::getRainbowColors(getTime());
                 m_spawnClock.restart();
             }
+
     }
 
     if(handler::InputHandler::isRightMouseClicked())
@@ -313,6 +330,21 @@ void Simulation::deleteBall( int& delID )
 
     m_objects.deleteElementById(delID);
 }
+void Simulation::clearEverything( )
+{
+    m_sticks.clear();
+    m_stickMaker.bluePrintSticks.clear();
+    m_objects.clear();
+
+}
+
+void Simulation::togglePause( )
+{
+    for(auto& obj : m_objects)
+        obj.setVelocity({0,0}, getSubDeltaTime());
+    m_paused = !m_paused;
+
+}
 
 void Simulation::getInput()
 {
@@ -327,9 +359,7 @@ void Simulation::getInput()
         if(!m_isKeyHeld)
         {
             m_isKeyHeld = true;
-            m_sticks.clear();
-            m_stickMaker.bluePrintSticks.clear();
-            m_objects.clear();
+            clearEverything();
         }
 
     }
@@ -338,9 +368,7 @@ void Simulation::getInput()
         if(!m_isKeyHeld)
         {
             m_isKeyHeld = true;
-            for(auto& obj : m_objects)
-                obj.setVelocity({0,0}, getSubDeltaTime());
-            m_paused = !m_paused;
+            togglePause();
         }
     }
     else if(handler::InputHandler::isGClicked())
@@ -639,12 +667,10 @@ void Simulation::checkConstraints( )
 {
     for(auto &obj : m_objects)
     {
-        float winWidth = m_window->getSize().x;
-        float winHeight = m_window->getSize().y;
         sf::Vector2f veloc = obj.currentPos - obj.oldPos;
-        if(obj.currentPos.x > winWidth - obj.radius)
+        if(obj.currentPos.x > m_constraintWidth - obj.radius)
         {
-            obj.currentPos.x = winWidth - obj.radius;
+            obj.currentPos.x = m_constraintWidth - obj.radius;
             //obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
         }
         if(obj.currentPos.x < obj.radius)
@@ -657,9 +683,9 @@ void Simulation::checkConstraints( )
             obj.currentPos.y = obj.radius;
             // obj.oldPos.y = obj.currentPos.y + veloc.y * obj.friction;
         }
-        if(obj.currentPos.y > winHeight - obj.radius)
+        if(obj.currentPos.y > m_constraintHeight - obj.radius)
         {
-            obj.currentPos.y = winHeight - obj.radius;
+            obj.currentPos.y = m_constraintHeight - obj.radius;
             // obj.oldPos.y = obj.currentPos.y + veloc.y * obj.friction;
         }
     }

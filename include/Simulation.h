@@ -25,6 +25,7 @@
 #include "StickMaker.h"
 #include "Math.h"
 #include "ColorHandler.h"
+#include "gui/Button.h"
 
 using namespace mth;
 namespace pe {
@@ -97,6 +98,9 @@ namespace pe {
 
             static const int s_ballPointCount = 30;
 
+            int m_constraintWidth = 100;
+            int m_constraintHeight = 100;
+
 
         private:
             void initText( );
@@ -151,15 +155,20 @@ namespace pe {
             void makeStickChain( );
             void spawnStick( );
             void createJoint( );
+            void clearEverything( );
+            void togglePause( );
 
             void changeMouseRadius( float change );
 
             const void setWindow( sf::RenderWindow& window );
             const void setSubSteps( int substeps );
+            const void setConstraintDimensions( int w, int h);
 
             const float getSubDeltaTime( ) const;
             const int getSubSteps( ) const;
             const float getTime( ) const;
+            const IDVector<Object>& getObjects( )const;
+            const IDVector<Stick>& getSticks( )const;
 
     };
 

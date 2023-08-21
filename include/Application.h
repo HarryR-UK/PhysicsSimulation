@@ -2,7 +2,9 @@
 #define APPLICATION_H
 #pragma once
 #include "Simulation.h"
+#include "gui/Button.h"
 
+#include "GuiHandler.h"
 #include <iostream>
 #include <vector>
 
@@ -39,6 +41,9 @@ class Application
         sf::Vector2i m_mousePosWindow;
 
         pe::Simulation m_sim;
+        handler::GuiHandler m_guiHandler;
+
+        const int GUI_PANEL_SIZE = 300;
 
     private:
         void initVariables( );

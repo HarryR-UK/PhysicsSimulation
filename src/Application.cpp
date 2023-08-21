@@ -14,8 +14,9 @@ Application::~Application()
 
 
 Application::Application()
-    : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2),
-    WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
+    : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2)
+    , WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
+    , m_guiHandler(m_sim)
     /*
     : WINDOW_WIDTH(sf::VideoMode::getDesktopMode().width / 1.2), 
     WINDOW_HEIGHT(sf::VideoMode::getDesktopMode().height / 1.05)
@@ -53,6 +54,10 @@ void Application::initWindow()
 
     m_window = new sf::RenderWindow(m_videoMode, "PHYSICS!",  sf::Style::Close, m_contextSettings);
     m_window->setFramerateLimit(244);
+
+    sg::Button::setWindow(*m_window);
+
+    m_sim.setConstraintDimensions(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
 }
 
 void Application::initFont()
@@ -96,19 +101,20 @@ void Application::toggleFullscreen( )
         {
             if(!m_isKeyHeld)
             {
+                m_sim.setConstraintDimensions(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
                 m_isKeyHeld = true;
 
                 m_videoMode.width = sf::VideoMode::getDesktopMode().width / 1.2;
                 m_videoMode.height = sf::VideoMode::getDesktopMode().height / 1.05;
 
                 if(m_isFullScreen)
-                {
                     m_window->create(m_videoMode, "PHYSICS", sf::Style::Close, m_contextSettings);
-                }
                 else
                     m_window->create(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "PHYSICS", sf::Style::None, m_contextSettings);
 
                 m_isFullScreen = !m_isFullScreen;
+                
+
             }
 
         }
@@ -141,6 +147,10 @@ void Application::update()
     pollEvents();
     getInput();
     updateMousePos();
+
+    sg::Button::update( );
+    m_guiHandler.update();
+
     m_sim.simulate();
 
 }
@@ -149,6 +159,8 @@ void Application::update()
 void Application::render()
 {
     m_window->clear();
+    
+    m_guiHandler.render(*m_window);
 
     m_sim.render(*m_window);
     m_sim.renderUI(*m_window);
