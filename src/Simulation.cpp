@@ -48,12 +48,12 @@ const float Simulation::getTime() const
 {
     return m_time;
 }
-const IDVector<Object>& Simulation::getObjects( )const
+IDVector<Object>& Simulation::getObjects( )
 {
     return m_objects;
 }
 
-const IDVector<Stick>& Simulation::getSticks( )const
+IDVector<Stick>& Simulation::getSticks( )
 {
     return m_sticks;
 }
@@ -146,7 +146,7 @@ void Simulation::buildModeMouseControls()
     if(handler::InputHandler::isLeftMouseClicked())
     {
             if(m_spawnClock.getElapsedTime().asSeconds() > m_spawnNewBallDelay 
-                    && m_mousePosView.x < m_constraintWidth && m_mousePosView.y < m_constraintHeight - m_mouseColRad)
+                    && m_mousePosView.x < m_constraintWidth - 5 && m_mousePosView.y < m_constraintHeight - m_mouseColRad)
             {
                 Object& obj = addNewObject(m_mousePosView, m_mouseColRad, m_newBallPin);
                 obj.color = handler::ColorHandler::getRainbowColors(getTime());
@@ -346,6 +346,11 @@ void Simulation::togglePause( )
 
 }
 
+void Simulation::toggleGravity()
+{
+    m_gravityActive = !m_gravityActive;
+}
+
 void Simulation::getInput()
 {
 
@@ -476,9 +481,9 @@ void Simulation::simulate( )
                     if(m_gravityActive)
                         applyGravityToObjects();
                     updateObjects( getSubDeltaTime() );
+                    updateSticks();
 
                 }
-                updateSticks();
                 ballGrabbedMovement();
                 checkConstraints();
                 checkCollisions();
@@ -668,9 +673,9 @@ void Simulation::checkConstraints( )
     for(auto &obj : m_objects)
     {
         sf::Vector2f veloc = obj.currentPos - obj.oldPos;
-        if(obj.currentPos.x > m_constraintWidth - obj.radius)
+        if(obj.currentPos.x > m_constraintWidth - 5 - obj.radius)
         {
-            obj.currentPos.x = m_constraintWidth - obj.radius;
+            obj.currentPos.x = m_constraintWidth - 5 - obj.radius;
             //obj.oldPos.x = obj.currentPos.x + veloc.x * obj.friction;
         }
         if(obj.currentPos.x < obj.radius)

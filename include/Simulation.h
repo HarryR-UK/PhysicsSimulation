@@ -156,7 +156,10 @@ namespace pe {
             void spawnStick( );
             void createJoint( );
             void clearEverything( );
+
             void togglePause( );
+            void toggleGravity( );
+
 
             void changeMouseRadius( float change );
 
@@ -167,8 +170,8 @@ namespace pe {
             const float getSubDeltaTime( ) const;
             const int getSubSteps( ) const;
             const float getTime( ) const;
-            const IDVector<Object>& getObjects( )const;
-            const IDVector<Stick>& getSticks( )const;
+            IDVector<Object>& getObjects( );
+            IDVector<Stick>& getSticks( );
 
     };
 

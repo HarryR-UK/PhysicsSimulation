@@ -31,6 +31,8 @@ Application::Application()
     m_sim.setWindow(*m_window);
     m_sim.setSubSteps(12);
 
+
+
 }
 
 
@@ -58,6 +60,8 @@ void Application::initWindow()
     sg::Button::setWindow(*m_window);
 
     m_sim.setConstraintDimensions(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
+    m_guiHandler.setContraints(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
+    m_guiHandler.setWindow(*m_window);
 }
 
 void Application::initFont()
@@ -101,7 +105,6 @@ void Application::toggleFullscreen( )
         {
             if(!m_isKeyHeld)
             {
-                m_sim.setConstraintDimensions(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
                 m_isKeyHeld = true;
 
                 m_videoMode.width = sf::VideoMode::getDesktopMode().width / 1.2;
@@ -114,6 +117,14 @@ void Application::toggleFullscreen( )
 
                 m_isFullScreen = !m_isFullScreen;
                 
+
+                m_sim.setConstraintDimensions(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
+                m_guiHandler.setContraints(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
+                IDVector<Object>& objs = m_sim.getObjects();
+                for(auto& obj : objs)
+                {
+                    obj.setVelocity(sf::Vector2f(0,0), m_sim.getTime());
+                }
 
             }
 
@@ -168,13 +179,25 @@ void Application::render()
     m_window->display();
 }
 
+void Application::displayFPS()
+{
+    std::stringstream ss;
+    ss << "PHYSICS - FPS: " << Time::getFps()
+        << " / " << m_updateClock.restart().asMilliseconds() 
+        << "ms";
+
+    m_window->setTitle(ss.str());
+}
+
 void Application::run()
 {
+    m_guiHandler.initButtons();
     m_sim.initSticks();
     while(this->isRunning())
     {
         Time::initDeltaTime();
         Time::updateFPS();
+        displayFPS();
 
         this->update();
 

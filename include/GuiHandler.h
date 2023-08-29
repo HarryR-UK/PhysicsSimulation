@@ -9,13 +9,22 @@ namespace handler {
     class GuiHandler
     {
         private:
+            sf::RenderWindow* m_window;
             pe::Simulation* m_sim = nullptr;
+            sf::Font* m_font;
+            sf::RectangleShape m_boundaryPole;
+            int m_constraintWidth;
+            int m_constraintHeight;
 
             sg::Button m_clearButton;
-            sf::Font* m_font;
+            sg::Button m_gravityButton;
+
+
 
         private:
-            void initButtons( );
+            void initClearButton( );
+            void initToggleGravityButton( );
+
 
         public:
 
@@ -25,9 +34,12 @@ namespace handler {
             void render( sf::RenderTarget& target );
             void update( );
 
+            void initButtons( );
+
+            const void setContraints(int w, int h);
+            const void setWindow(sf::RenderWindow& window);
     };
-
-
 };
+
 
 #endif

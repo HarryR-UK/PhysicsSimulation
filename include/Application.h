@@ -7,11 +7,14 @@
 #include "GuiHandler.h"
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 #include "SFML/Window/ContextSettings.hpp"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include "IDVector.h"
+#include "Object.h"
 
 
 class Application
@@ -43,6 +46,8 @@ class Application
         pe::Simulation m_sim;
         handler::GuiHandler m_guiHandler;
 
+        sf::Clock m_updateClock;
+
         const int GUI_PANEL_SIZE = 300;
 
     private:
@@ -51,6 +56,7 @@ class Application
         void initFont( );
         void initText( );
         void toggleFullscreen( );
+        void displayFPS();
 
 
         
