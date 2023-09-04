@@ -30,6 +30,9 @@ The video below shows just some of the features and freedom that my physics simu
 
 
 # Controls
+
+> `F` <- toggle fullscreen
+>
 > `SPACE` <- toggle pause
 >
 > `E` <- toggle Build Mode
