@@ -24,7 +24,7 @@ While it may not be ideal, due to the many issues that templates can cause, I fe
 
 The video below shows just some of the features and freedom that my physics simulation allows!
 
-![video](img/video.gif)
+![video](img/vid.gif)
 
 
 # IMAGES
