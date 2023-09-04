@@ -27,6 +27,30 @@ The video below shows just some of the features and freedom that my physics simu
 ![video](img/vid.gif)
 
 
+# Controls
+> `SPACE` <- toggle pause
+>
+> `E` <- toggle Build Mode
+>
+> `G` <- toggle gravity
+>
+> `Q` <- toggle pin object
+>
+> `Hold Left Click` <- pick up object
+>
+> `Hold Right Click` <- use your mouse as a collision
+>
+> `Scroll Wheel` <- change the mouse affection radius (BUILD MODE: changed size of ball to be spawned)
+>
+> BUILD MODE: `S` <- start stick-chain `A` <- completes the stick chain and spawns the objects
+>
+> BUILD MODE: `W` <- press this on 2 objects to create a joint
+>
+> BUILD MODE: `LEFT CLICK` <- spawn object
+>
+> BUILD MODE: `RIGHT CLICK` <- delete object / stick
+
+
 # IMAGES
 
 #### Make Ropes!
@@ -39,4 +63,4 @@ The video below shows just some of the features and freedom that my physics simu
 
 #### Break and delete objects with correct interactions!
 
-![Broken Rope](img/broke.png)
+![Broken Rope](img/broken.png)
