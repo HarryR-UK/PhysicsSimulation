@@ -2,9 +2,9 @@
 
 A physics simulation written using C++ and using SFML for graphics. I had to learn about different phyiscs integrations
  which use Newton's laws of motion numerically. Choosing between Euler and Verlet integrations was difficult, however after watching 
- ![Pikuma's video](https://www.youtube.com/watch?v=-GWTDhOQU6M) I decided to prioritise the accuracy of the physics. 
+ [Pikuma's video](https://www.youtube.com/watch?v=-GWTDhOQU6M) I decided to prioritise the accuracy of the physics. 
 
- Both ![Pikuma](https://www.youtube.com/@pikuma) and ![JohnBuffer's projects](https://github.com/johnBuffer) inspired me to 
+ Both [Pikuma](https://www.youtube.com/@pikuma) and [JohnBuffer's projects](https://github.com/johnBuffer) inspired me to 
  try my hand at a physics simulation.
 
  I also managed to use my own GUI elements of buttons for GUI. At the time of writing this there are not too many buttons, but those that are there 
