@@ -4,6 +4,7 @@
 #include "Simulation.h"
 #include <vector>
 #include "gui/Button.h"
+#define VERTICAL_SPACE 30
 
 namespace handler {
     class GuiHandler
@@ -18,12 +19,17 @@ namespace handler {
 
             sg::Button m_clearButton;
             sg::Button m_gravityButton;
+            sg::Button m_pauseButton;
+
+            sg::Button m_buildButton;
 
 
 
         private:
             void initClearButton( );
             void initToggleGravityButton( );
+            void initPauseButton( );
+            void initBuildButton( ); 
 
 
         public:

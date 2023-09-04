@@ -120,6 +120,8 @@ void Application::toggleFullscreen( )
 
                 m_sim.setConstraintDimensions(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
                 m_guiHandler.setContraints(m_window->getSize().x - GUI_PANEL_SIZE, m_window->getSize().y);
+                // updates the buttons positions with the new screen size
+                m_guiHandler.initButtons();
                 IDVector<Object>& objs = m_sim.getObjects();
                 for(auto& obj : objs)
                 {

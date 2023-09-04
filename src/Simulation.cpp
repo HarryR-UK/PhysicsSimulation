@@ -351,6 +351,11 @@ void Simulation::toggleGravity()
     m_gravityActive = !m_gravityActive;
 }
 
+void Simulation::toggleBuild()
+{
+    m_buildModeActive = !m_buildModeActive;
+}
+
 void Simulation::getInput()
 {
 

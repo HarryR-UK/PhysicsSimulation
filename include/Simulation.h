@@ -159,6 +159,7 @@ namespace pe {
 
             void togglePause( );
             void toggleGravity( );
+            void toggleBuild( );
 
 
             void changeMouseRadius( float change );
