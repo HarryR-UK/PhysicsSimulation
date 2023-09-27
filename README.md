@@ -69,3 +69,9 @@ The video below shows just some of the features and freedom that my physics simu
 #### Break and delete objects with correct interactions!
 
 ![Broken Rope](img/broken.png)
+
+
+
+# FULL VIDEO OF GIF
+
+![CLICK HERE TO SEE BETTER QUALITY VIDEO](img/showcase.mov) 
